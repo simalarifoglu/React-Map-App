@@ -1,0 +1,24 @@
+.Header h1{
+    color: #ec8c69;
+    margin: 0;  
+    font-size: 25px;
+    display: inline-block;
+    white-space: nowrap; 
+}
+
+.Header{
+    background-color: #ffe4da;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+}
+
+.Header .button button{
+margin-left: 7px;
+}

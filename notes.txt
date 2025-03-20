@@ -1,0 +1,5 @@
+- point linestring polygon renkleri
+- search ve pagination
+- delete popup
+- do you want to update panel
+- drag mode icin panel kapansin noktaya zoom 

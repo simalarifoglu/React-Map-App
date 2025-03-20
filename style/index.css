@@ -1,0 +1,37 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    gap: 10px; 
+    width: 100%; 
+    padding: 20px 0;
+  }
+
+  .button-group button {
+    border-radius: 20px;
+    border: 1px solid transparent;
+    padding: 10px 15px;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #ec8c69;
+    cursor: pointer;
+    transition: border-color 0.25s;
+  }
+
+.button-group button:hover {
+    background-color: #f17a4e; 
+    transform: scale(1);
+    box-shadow: 0 4px 10px rgba(248, 89, 16, 0.5);
+  }
+
+  .button-group button:active {
+    transform: scale(0.95); 
+  }
+  
