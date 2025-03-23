@@ -2,28 +2,29 @@ import { updateFeature } from "../redux/state/mapObjectsState";
 import { toast } from "react-toastify";
 import { Collection } from "ol";
 import WKT from "ol/format/WKT";
-import { vectorSource } from "../MapView";
-import { getMap } from "../MapView";
-import { Translate } from "ol/interaction";
+import { vectorSource } from "./MapView";
+import { getMap } from "./MapView";
+import { Translate, Modify } from "ol/interaction";
 
-const enableTranslateMode = (selectedFeatureJSON, dispatch) => {
+export const enableTranslateMode = (selectedFeatureJSON, dispatch, getUserConfirmation) => {
     const map = getMap();
-
+    
     const selectedFeature = vectorSource.getFeatures().find(feature => {
         return feature.getId() === selectedFeatureJSON.id;
     });
 
     if (!selectedFeature) {
+        console.error("Seçilen özellik vectorSource'ta bulunamadı.");
         return;
     }
 
     const initialGeometry = selectedFeature.getGeometry().clone();
 
     const translate = new Translate({
-        features: new Collection([selectedFeature])
+        features: new Collection([selectedFeature]) 
     });
 
-    translate.on('translateend', (event) => {
+    translate.on('translateend', async (event) => {
         const feature = event.features.item(0);
         const geometry = feature.getGeometry();
 
@@ -32,10 +33,11 @@ const enableTranslateMode = (selectedFeatureJSON, dispatch) => {
         const wktFormat = new WKT();
         const wkt = wktFormat.writeGeometry(transformedGeometry);
 
-        if (!confirm("Do you want to update?")) {
+        const userConfirmed = await getUserConfirmation();
+        if (!userConfirmed) {
             selectedFeature.setGeometry(initialGeometry);
             
-            toast.warning("Update operation is cancelled!");
+            toast.warning("Updation process cancelled!");
             
         } else {
             const data = {
@@ -47,12 +49,10 @@ const enableTranslateMode = (selectedFeatureJSON, dispatch) => {
                 data: data
             }));
             
-            toast.success("Feature updated successfully!");
+            toast.success("Deletion completed successfully.!");
 
         }
         map.removeInteraction(translate);
     });
     map.addInteraction(translate);
 };
-
-export default enableTranslateMode;

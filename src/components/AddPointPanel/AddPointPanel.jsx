@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { addFeature } from '../../redux/state/mapObjectsState';
 import { resetLastDrawnFeature,nullLastDrawnFeature } from '../../utils/DrawPoint';
 import './AddPointPanel.css';
+import '../Modal/Modal.css'
 
 const AddPointPanel = ({ isOpen, onClose, title, position = 'right'}) => {
   const dispatch = useDispatch();
@@ -25,13 +26,13 @@ const AddPointPanel = ({ isOpen, onClose, title, position = 'right'}) => {
   const handlePanelClose = () => {
     setPointName('');
     onClose();
-    toast.warning("Feature Adding Cancelled!");
+    toast.warning("Feature creation cancelled!");
     resetLastDrawnFeature();
   };
 
   const handleClickOutside = useCallback((event) => {
     if (AddPointPanelRef.current && !AddPointPanelRef.current.contains(event.target) && isOpen) {
-      toast.warning("Feature Adding Cancelled!");
+      toast.warning("Feature creation cancelled!");
       onClose();
       resetLastDrawnFeature();
     }
@@ -52,7 +53,7 @@ const AddPointPanel = ({ isOpen, onClose, title, position = 'right'}) => {
     setPointName('');
     event.preventDefault();
     dispatch(addFeature(featureData));
-    toast.success("Feature Successfully Added!");
+    toast.success("Feature creation completed!");
     nullLastDrawnFeature();
     onClose();
   };

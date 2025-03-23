@@ -45,7 +45,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
+    padding: 10px;
     border-bottom: 1px solid #be431e;
   }
   
@@ -91,7 +91,7 @@
   .table-container {
     flex: 1;
     overflow: auto;
-    border: 1px solid #E8A89B;
+    border: 1px solid #d18989;
     background-color: #fcefeb;
     border-radius: 4px;
   }
@@ -128,6 +128,9 @@
     background-color: #F5C6BC;
 
   }
+  
+  .drag-btn,
+  .modify-btn,
   .save-btn,
   .close-btn,
   .update-btn, 
@@ -174,6 +177,22 @@
     background-color: #641b14;
   }
 
+  .modify-btn{
+    background-color: #E2735E;
+  }
+
+  .modify-btn:hover{
+    background-color: #b8503b;
+  } 
+
+  .drag-btn{
+    background-color: #E2735E;
+  }
+  
+  .drag-btn:hover{
+    background-color: #b8503b;
+  }
+
 ::-webkit-scrollbar {
   width: 10px; 
 }
@@ -191,4 +210,55 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #D9534F;
+}
+
+.search-bar-container {
+  margin-bottom: 10px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d18989;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  color: #641b14;
+  background-color: #fff;
+}
+
+.search-input::placeholder {
+  color: #b46a5b;
+}
+
+.search-input:focus {
+  border-color: #b8503b;
+  box-shadow: 0 0 0 2px rgba(184, 80, 59, 0.2);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.pagination button {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #b8503b;
+  background-color: white;
+  color: #641b14;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+  background-color: #f5c6bc;
+}
+
+.pagination button.active {
+  background-color: #b8503b;
+  color: white;
 }

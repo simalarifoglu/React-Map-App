@@ -2,4 +2,6 @@
 - search ve pagination
 - delete popup
 - do you want to update panel
-- drag mode icin panel kapansin noktaya zoom 
+- surukleme icin panel kapansin noktaya zoom 
+- delete edince nokta haritadan silinmiyor.
+- toast warning uyarılar guncelle

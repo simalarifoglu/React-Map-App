@@ -16,9 +16,8 @@
     padding: 20px;
     border-radius: 8px;
     max-width: 500px;
-    background-color: #ffd4c5;
+    background-color: #ffece6;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    width: 80%;
   }
   
   .carpi-buton{
@@ -52,19 +51,26 @@
   
   .edit-butonlari button {
     margin-left: 10px;
-    font-size: 20px;
+    font-size: 15px;
    
   }
   
   .table-container input {
-    height: 100%;
-    width: 95%; 
-    padding: 8px 12px; 
-    border: 1px solid #ccc; 
-    border-radius: 4px; 
-    font-size: 14px;
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #d18989;
+    border-radius: 6px;
+    font-size: 15px;
     outline: none;
-    transition: all 0.3s ease; 
+    transition: border-color 0.2s ease;
+    background-color: #fff;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.edit-input:focus {
+  border-color: #d36c4e;
+  box-shadow: 0 0 0 2px rgba(211, 108, 78, 0.2);
 }
 
 .table-container input:disabled {
@@ -77,4 +83,21 @@
   padding-top: 0px;
   padding-right: 0px;
   padding-left: 15px;
+  border-bottom: none !important;
+}
+
+.confirm-ask{
+  padding: 10px;
+
+}
+.confirm-container button{
+  font-size: 15px;
+  text-align: right;
+  padding: 5px 15px;
+  margin: 10px;
+  margin-top: 20px;
+  display: inline-block;
+}
+.confirm-btn-container {
+  text-align: right;
 }

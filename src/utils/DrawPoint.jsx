@@ -1,8 +1,8 @@
 import { setWkt } from '../redux/state/wktState';
 import { transform } from 'ol/proj';
 import { Draw } from 'ol/interaction';
-import {vectorSource} from '../MapView';
-import { getMap } from '../MapView';
+import {vectorSource} from './MapView';
+import { getMap } from './MapView';
 
 let drawInteraction = false;
 let lastDrawnFeature = null;

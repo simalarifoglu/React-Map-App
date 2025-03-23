@@ -18,19 +18,17 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  position: relative; /* Ortalamak için */
+  position: relative;
   transform: scale(0.9);
   opacity: 0;
   transition: transform 0.3s ease-out, opacity 0.3s ease-out;
 }
 
-/* Açıldığında animasyonlu gelmesi */
 .panel-open {
   transform: scale(1);
   opacity: 1;
 }
 
-/* Kapatma butonu */
 .panel-close-btn {
   position: absolute;
   top: 10px;
@@ -43,7 +41,7 @@
 }
 
 .panel-close-btn:hover {
-  color: red;
+  color: #641b14;
 }
 
 .form-group {
@@ -57,27 +55,58 @@
 
 .form-group input {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  color: rgb(0, 0, 0);
+  padding: 8px 12px;
+  border: 1px solid #d18989;
+  border-radius: 6px;
+  font-size: 15px;
+  background-color: #fff;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus {
+  border-color: #d36c4e;
+  box-shadow: 0 0 0 2px rgba(211, 108, 78, 0.2);
 }
 
 .form-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.form-actions button {
+  padding: 10px 15px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.save-btn{
+  background-color: #E2735E;
+}
+.save-btn:hover{
+  background-color: #b8503b;
 }
 
 .cancel-btn {
   background-color: #ad3f3b;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 .cancel-btn:hover {
-  background-color: #641b14;
-  transition: background 0.3s ease-in-out;
+  background-color: #992501;
+}
+
+.add-feature-title {
+  color: #6b1b03;
+  font-size: 18px;
+  display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px ;
 }

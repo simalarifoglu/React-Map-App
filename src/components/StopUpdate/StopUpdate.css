@@ -1,0 +1,22 @@
+.stop-editing-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    margin-top: 0;    
+  }
+  
+  .stop-editing {
+    font-size: 15px;
+    padding: 10px 20px;
+    background-color: #E2735E; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  }
+  
+  .stop-editing:hover {
+    background-color: #b8503b; 
+  }
