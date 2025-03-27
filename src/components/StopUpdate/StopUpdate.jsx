@@ -2,7 +2,7 @@ import './StopUpdate.css';
 import { onEdit, offEdit } from '../../redux/state/editState';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
-import ConfirmPanel from '../ConfirmPanel';
+import ConfirmPanel from '../ConfirmPanel/ConfirmPanel';
 
 export const StopEditButton = ({ onConfirmStop }) => {
   const dispatch = useDispatch();

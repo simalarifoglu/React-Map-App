@@ -29,7 +29,7 @@ function Header() {
       <AddPointPanel
         isOpen={isAddPointPanelOpen} 
         onClose={() => setIsAddPointPanelOpen(false)}
-        title={<span className="add-feature-title">Add Feature</span>}
+        title={<span className="add-feature-title">Add Object</span>}
         position="right"
       />
       <QueryPanel 

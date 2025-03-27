@@ -6,7 +6,7 @@ import { closePanel } from "../../redux/state/panelState";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { offEditPanel } from "../../redux/state/panelState";
-import ConfirmPanel from "../ConfirmPanel";
+import ConfirmPanel from "../ConfirmPanel/ConfirmPanel";
 import { onEdit } from "../../redux/state/editState";
 import { enableTranslateMode } from "../../utils/DragPoint";
 import zoomToFeature from "../../utils/ZoomPoint";
@@ -97,19 +97,17 @@ const UpdatePanel = () => {
     };
     const handleConfirmResult = (result) => {
         if (confirmResolve) {
-            confirmResolve(result); // Promise'i çöz
-            setConfirmResolve(null); // Temizle
+            confirmResolve(result); 
+            setConfirmResolve(null); 
         }
         setIsConfirmPanelOpen(false);
     };
-    //onEdit
     const onEditFunction = () =>{
         dispatch(onEdit());
     }
-    //offEdit
     return (
         <>
-        <Modal isOpen={isOpen} onClose={handleClose} title="Editing Feature">
+        <Modal isOpen={isOpen} onClose={handleClose} title="Modify Feature">
         {selectedFeature && (
             <>
             <div className="form-group">
@@ -152,7 +150,6 @@ const UpdatePanel = () => {
             )}
         </div>
         </Modal>
-
         <ConfirmPanel
                 isOpen={isConfirmPanelOpen}
                 onClose={() => setIsConfirmPanelOpen(false)}

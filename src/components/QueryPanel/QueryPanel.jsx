@@ -7,7 +7,7 @@ import { deleteFeature } from '../../redux/state/mapObjectsState';
 import { setFeature } from '../../redux/state/featureState';
 import { openPanel } from '../../redux/state/panelState';
 import { onEditPanel } from '../../redux/state/panelState';
-import ConfirmPanel from '../ConfirmPanel';
+import ConfirmPanel from '../ConfirmPanel/ConfirmPanel';
 import './QueryPanel.css';
 
 const QueryPanel = ({ isOpen, onClose }) => {

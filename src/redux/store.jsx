@@ -11,6 +11,6 @@ export const store = configureStore({
     wkt: wktReducer,
     feature: featureReducer,
     panel: panelReducer,
-    Edit: editReducer
-  },
+    Edit: editReducer,
+    },
 })
