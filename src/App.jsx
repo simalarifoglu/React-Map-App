@@ -14,44 +14,31 @@ import { StopEditButton } from "./components/StopUpdate/StopUpdate";
 function App() {
   const [isConfirmPanelOpen, setIsConfirmPanelOpen] = useState(false);
   const dispatch = useDispatch();
-  const { objects } = useSelector((state) => state.object);
+  const { objects } = useSelector(state => state.object);
 
-  // Sayfa yüklendiğinde objeleri getir
+  // Fetch objects on component mount
   useEffect(() => {
     dispatch(getAllObjects());
   }, [dispatch]);
 
-  // Objeler değiştiğinde ekrana yansıt
+  // Call displayObj whenever objects change
   useEffect(() => {
     if (objects && objects.length > 0) {
       displayObj(objects);
     }
   }, [objects]);
 
-  return (
-    <Router>
+  return(
+    <>
       <ToastContainer position="top-right" autoClose={3000} />
       <Header />
-
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route
-          path="/map"
-          element={
-            <>
-              <StopEditButton />
-              <InitMap />
-              <ConfirmPanel
-                isOpen={isConfirmPanelOpen}
-                onClose={() => setIsConfirmPanelOpen(false)}
-              />
-            </>
-          }
-        />
-      </Routes>
-    </Router>
+      <StopEditButton/>
+      <InitMap/>
+      <ConfirmPanel
+        isOpen={isConfirmPanelOpen}
+        onClose={() => setIsConfirmPanelOpen(false)} 
+      /> 
+    </>
   );
 }
 
