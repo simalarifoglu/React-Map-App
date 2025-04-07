@@ -1,7 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllObjects } from "./redux/state/mapObjectsState";
+import { loginSuccess, logout } from "./redux/state/authState"; 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -11,34 +12,84 @@ import displayObj from "./utils/DisplayPoint";
 import ConfirmPanel from "./components/ConfirmPanel/ConfirmPanel";
 import { StopEditButton } from "./components/StopUpdate/StopUpdate";
 
-function App() {
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+function MapPage() {
   const [isConfirmPanelOpen, setIsConfirmPanelOpen] = useState(false);
   const dispatch = useDispatch();
-  const { objects } = useSelector(state => state.object);
+  const { objects } = useSelector((state) => state.object);
 
-  // Fetch objects on component mount
   useEffect(() => {
     dispatch(getAllObjects());
   }, [dispatch]);
 
-  // Call displayObj whenever objects change
   useEffect(() => {
     if (objects && objects.length > 0) {
       displayObj(objects);
     }
   }, [objects]);
 
-  return(
+  return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       <Header />
-      <StopEditButton/>
-      <InitMap/>
+      <StopEditButton />
+      <InitMap />
       <ConfirmPanel
         isOpen={isConfirmPanelOpen}
-        onClose={() => setIsConfirmPanelOpen(false)} 
-      /> 
+        onClose={() => setIsConfirmPanelOpen(false)}
+      />
     </>
+  );
+}
+
+function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      dispatch(loginSuccess({ token: null, user: JSON.parse(savedUser) }));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetch("https://localhost:7176/api/Auth/me", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Unauthorized");
+        return res.json();
+      })
+      .then((data) => {
+        dispatch(loginSuccess({ token: null, user: { email: data.email } }));
+      })
+      .catch((err) => {
+        dispatch(logout());
+      });
+  }, [dispatch]);
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        <Route
+          path="/map"
+          element={
+            <ProtectedRoute>
+              <MapPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    </Router>
   );
 }
 

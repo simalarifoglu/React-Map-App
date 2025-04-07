@@ -109,9 +109,7 @@ const InitMap = () => {
   useEffect(() => {
     const map = getMap();
     
-    console.log("initmapUseeffect",isModify);
     if(isModify){ 
-      console.log("enabled modify mode")
       if(map){
         const selectedFeature = vectorSource.getFeatures().find((feature) => {
           return feature.getId() === selectedFeatureJSON.id;
@@ -142,7 +140,6 @@ const InitMap = () => {
               const wktFormat = new WKT();
               const wkt = wktFormat.writeGeometry(transformedGeometry);
               wktRef.current = wkt;
-              console.log(wkt);
 
               // Call the offEditFunction to handle cleanup
               
@@ -152,10 +149,9 @@ const InitMap = () => {
       });
   
       map.addInteraction(modify); // Add the Modify interaction to the map
-      }else{console.log("map is empty")}
+      }else{}
       
     }else{
-      console.log("removedInteraction");
       if (map && modifyRef.current) {
         map.removeInteraction(modifyRef.current);
         modifyRef.current = null;
@@ -170,7 +166,7 @@ const InitMap = () => {
           data: data,
         }));
         toast.success("Updation completed successfully.");
-      }else{console.log("failed removing")}
+      }else{}
     }
   }, [isModify]);
 

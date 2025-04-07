@@ -7,7 +7,6 @@ const zoomToFeature = (map, feature) => {
     }
     
     try {
-        console.log('Zooming to feature:', feature);
         const wktFormat = new WKT();
         
         const geometry = wktFormat.readGeometry(feature.wkt, {

@@ -4,6 +4,7 @@ import wktReducer from './state/wktState'
 import featureReducer from './state/featureState'
 import panelReducer from './state/panelState'
 import editReducer from './state/editState'
+import authReducer from "./state/authState";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     feature: featureReducer,
     panel: panelReducer,
     Edit: editReducer,
+    auth: authReducer
     },
 })

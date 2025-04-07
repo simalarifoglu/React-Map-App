@@ -71,12 +71,10 @@ const QueryPanel = ({ isOpen, onClose }) => {
     
     // Find the feature and zoom to it
     const handleShow = (id) => {
-        console.log(`Zooming to feature with ID: ${id}`);
         const map = getMap(); // Get the map instance
         const feature = objects.find(obj => obj.id === id);
         
         if (feature && map) {
-            console.log('Map and feature found, zooming...');
             zoomToFeature(map, feature);
 
         } else {

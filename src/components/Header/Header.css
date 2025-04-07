@@ -22,3 +22,36 @@
 .Header .button button{
 margin-left: 7px;
 }
+
+.logout-container {
+  position: absolute;
+  top: 12px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.logout-button {
+  border-radius: 20px;
+  border: 1px solid transparent;
+  padding: 10px 15px;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #ec8c69;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+.logout-button:hover {
+  background-color: #f17a4e; 
+  transform: scale(1);
+  box-shadow: 0 4px 10px rgba(248, 89, 16, 0.5);
+}
+
+.logout-button:active {
+  transform: scale(0.95);
+}
+
