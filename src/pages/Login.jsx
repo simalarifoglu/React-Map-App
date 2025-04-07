@@ -50,11 +50,11 @@ export default function Login() {
         localStorage.setItem("user", JSON.stringify(userData));
         navigate("/map", { replace: true });
       } else {
-        setErrorMessage("Giriş başarılı ama kullanıcı bilgisi alınamadı.");
+        setErrorMessage("Login was successful but user information could not be obtained.");
       }
     } else {
       const data = await response.json();
-      setErrorMessage(data.message || "Giriş başarısız");
+      setErrorMessage(data.message || "Login failed");
     }
   };
   

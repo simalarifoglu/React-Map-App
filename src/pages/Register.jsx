@@ -33,10 +33,10 @@ export default function Register() {
     const data = await response.json();
 
     if (response.ok) {
-      setSuccessMessage("Kayıt başarılı! Şimdi giriş yapabilirsiniz.");
+      setSuccessMessage("Registration successful! You can now log in.");
       navigate("/login");
     } else {
-      setErrorMessage(data.message || "Kayıt başarısız");
+      setErrorMessage(data.message || "Registration failed!");
     }
   };
 

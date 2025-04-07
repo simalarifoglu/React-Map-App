@@ -69,9 +69,8 @@ const QueryPanel = ({ isOpen, onClose }) => {
         setIsConfirmPanelOpen(false);
     };    
     
-    // Find the feature and zoom to it
     const handleShow = (id) => {
-        const map = getMap(); // Get the map instance
+        const map = getMap();
         const feature = objects.find(obj => obj.id === id);
         
         if (feature && map) {

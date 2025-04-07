@@ -14,7 +14,7 @@ export const enableTranslateMode = (selectedFeatureJSON, dispatch, getUserConfir
     });
 
     if (!selectedFeature) {
-        console.error("Seçilen özellik vectorSource'ta bulunamadı.");
+        console.error("The selected feature was not found in vectorSource.");
         return;
     }
 

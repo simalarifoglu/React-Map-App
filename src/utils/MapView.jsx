@@ -98,7 +98,6 @@ const InitMap = () => {
     }
   }, []);
 
-  //modify ve drag islemi
   const isModify = useSelector(state => state.Edit.edit);
   const selectedFeatureJSON = useSelector(state => state.feature.feature);
 
@@ -121,34 +120,29 @@ const InitMap = () => {
           return;
       }
   
-      // Save the initial geometry for reverting changes
       const initialGeometry = selectedFeature.getGeometry().clone();
       revertRef.current = initialGeometry;
-      // Create a Modify interaction for the selected feature
       const modify = new Modify({
-          source: vectorSource, // Source containing the feature
-          features: new Collection([selectedFeature]), // Restrict modification to this feature
+          source: vectorSource,
+          features: new Collection([selectedFeature]), 
       });
       modifyRef.current = modify;
       modify.on("modifyend", async (event) => {
           if (event.features && event.features.getLength() > 0) {
-              const feature = event.features.item(0); // Modified feature
+              const feature = event.features.item(0); 
               const geometry = feature.getGeometry();
   
-              // Convert the geometry to WKT format
               const transformedGeometry = geometry.clone().transform("EPSG:3857", "EPSG:4326");
               const wktFormat = new WKT();
               const wkt = wktFormat.writeGeometry(transformedGeometry);
               wktRef.current = wkt;
-
-              // Call the offEditFunction to handle cleanup
               
           } else {
               console.error("No features found in modifyend event.");
           }
       });
   
-      map.addInteraction(modify); // Add the Modify interaction to the map
+      map.addInteraction(modify);
       }else{}
       
     }else{

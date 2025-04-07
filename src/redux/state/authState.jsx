@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   token: null,
   user: null,
-  isInitialized: false, // YENİ
+  isInitialized: false,
 };
 
 const authSlice = createSlice({
@@ -13,16 +13,16 @@ const authSlice = createSlice({
     loginSuccess: (state, action) => {
       state.token = action.payload.token;
       state.user = action.payload.user;
-      state.isInitialized = true; // YENİ
+      state.isInitialized = true;
     },
     logout: (state) => {
       state.token = null;
       state.user = null;
-      state.isInitialized = true; // YENİ
+      state.isInitialized = true;
     },
     setUser: (state, action) => {
       state.user = action.payload;
-      state.isInitialized = true; // YENİ
+      state.isInitialized = true;
     },
   },
 });

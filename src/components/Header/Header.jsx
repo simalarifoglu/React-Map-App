@@ -24,7 +24,7 @@ function Header() {
 
       dispatch(logout());
       localStorage.removeItem("user");
-      navigate("/login", { replace: true });
+navigate("/login", { replace: true });
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -34,7 +34,7 @@ function Header() {
     !visibility && (
       <header className="Header">
         <div className="header-top">
-          <h1>Türkiye Haritası</h1>
+          <h1>Turkey Map</h1>
           {user && (
             <div className="logout-container">
               <button onClick={handleLogout} className="logout-button">Log Out</button>
