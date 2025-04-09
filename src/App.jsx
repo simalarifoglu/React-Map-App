@@ -50,7 +50,7 @@ function App() {
 
   const logoutAndClearData = () => {
     dispatch(logout());
-    dispatch(clearObjects()); // önceki objeleri temizle
+    dispatch(clearObjects());
     localStorage.removeItem("user");
   };
   
@@ -64,7 +64,7 @@ function App() {
   useEffect(() => {
     fetch("https://localhost:7176/api/Auth/me", {
       method: "GET",
-      credentials: "include", // JWT cookie için şart
+      credentials: "include",
     })
       .then((res) => {
         if (!res.ok) throw new Error("Unauthorized");
@@ -85,7 +85,7 @@ function App() {
           id: data.id
         }));
   
-        dispatch(getFilteredObjects()); // ✅ kullanıcının verilerini sayfa yenilenince de getir
+        dispatch(getFilteredObjects());
       })
       .catch((err) => {
         dispatch(logoutAndClearData());

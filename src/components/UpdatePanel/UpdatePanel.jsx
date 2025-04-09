@@ -46,7 +46,7 @@ const UpdatePanel = () => {
             };
     
             dispatch(updateFeature({ 
-                id: selectedFeature.id, // <-- bu eklendi!
+                id: selectedFeature.id,
                 data 
             }));
     

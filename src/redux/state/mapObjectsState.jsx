@@ -84,22 +84,15 @@ export const updateFeature = createAsyncThunk(
         const response = await axios.put(`${API_BASE_URL}/Points/${id}`, data, {
           withCredentials: true
         });
-  
-        console.log("✅ Backend response:", response.data);
-  
-        // Eğer backend şu yapıda dönüyorsa: { value: { ... }, message: ..., status: ... }
+        console.log("Backend response:", response.data);
         return response.data.value;
       } catch (error) {
-        console.error("❌ Update error:", error);
-  
-        // Ekstra bilgi ile hatayı Redux'a aktar
+        console.error("Update error:", error);
         return rejectWithValue(error.response?.data || "Update error");
       }
     }
   );
   
-  
-
 const initialState = {
     objects: [],
     loading: false
@@ -120,10 +113,9 @@ export const objectSlice = createSlice({
         .addCase(addFeature.fulfilled, (state, action) => {
             state.objects.push(action.payload);
           
-            //  Haritaya da ekle
             const wktFormat = new WKT();
             const geometry = wktFormat.readGeometry(action.payload.wkt);
-            geometry.transform('EPSG:4326', 'EPSG:3857'); // koordinat dönüşümü
+            geometry.transform('EPSG:4326', 'EPSG:3857');
           
             const feature = new Feature({
               geometry: geometry,
