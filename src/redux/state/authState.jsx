@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { clearObjects, getFilteredObjects } from "./mapObjectsState";
 
 const initialState = {
   token: null,
@@ -28,4 +29,17 @@ const authSlice = createSlice({
 });
 
 export const { loginSuccess, logout, setUser } = authSlice.actions;
+
+// 👇 logout action'ı tetiklenince objectSlice da temizlensin:
+export const logoutAndClearData = () => (dispatch) => {
+  dispatch(logout());
+  dispatch(clearObjects());
+};
+
+export const loginSuccessAndReset = (user) => async (dispatch) => {
+  dispatch(clearObjects());
+  dispatch(loginSuccess({ token: null, user }));
+  await dispatch(getFilteredObjects()); // login sonrası verileri hemen çek
+};
+
 export default authSlice.reducer;

@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../redux/state/authState";
 import { useNavigate } from "react-router-dom";
+import { clearObjects } from "../redux/state/mapObjectsState";
+import { vectorSource } from "../utils/MapView";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -28,15 +30,34 @@ export default function Login() {
     setErrorMessage("");
     setSuccessMessage("");
   
-    const response = await fetch("https://localhost:7176/api/auth/login", {
+    fetch("https://localhost:7176/api/Auth/login", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
       credentials: "include",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, rememberMe }),
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      dispatch(clearObjects());
+      vectorSource.clear();
+      dispatch(loginSuccess({
+        token: null,
+        user: {
+          email: data.email,
+          role: data.role,
+          id: data.id
+        }
+      }));
+    
+      localStorage.setItem("user", JSON.stringify({
+        email: data.email,
+        role: data.role,
+        id: data.id
+      }));
+    
+      navigate("/map");
     });
-  
+    
     if (response.ok) {
       const meRes = await fetch("https://localhost:7176/api/Auth/me", {
         method: "GET",

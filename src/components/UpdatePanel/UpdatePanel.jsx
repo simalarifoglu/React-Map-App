@@ -44,7 +44,12 @@ const UpdatePanel = () => {
                 name: editedName,
                 wkt: selectedFeature.wkt
             };
-            dispatch(updateFeature({ data }));
+    
+            dispatch(updateFeature({ 
+                id: selectedFeature.id, // <-- bu eklendi!
+                data 
+            }));
+    
             setIsEditing(false);
             dispatch(offEditPanel());
             toast.success("Updation completed successfully!");
@@ -52,7 +57,7 @@ const UpdatePanel = () => {
         } else {
             triggerCancel();
         }
-    };
+    };    
     
     const triggerCancel = () => {
         setEditedName(selectedFeature.name);

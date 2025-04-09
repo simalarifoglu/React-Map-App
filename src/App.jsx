@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllObjects } from "./redux/state/mapObjectsState";
+import { getFilteredObjects } from "./redux/state/mapObjectsState";
 import { loginSuccess, logout } from "./redux/state/authState"; 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,7 +22,7 @@ function MapPage() {
   const { objects } = useSelector((state) => state.object);
 
   useEffect(() => {
-    dispatch(getAllObjects());
+    dispatch(getFilteredObjects());
   }, [dispatch]);
 
   useEffect(() => {
@@ -48,6 +48,12 @@ function MapPage() {
 function App() {
   const dispatch = useDispatch();
 
+  const logoutAndClearData = () => {
+    dispatch(logout());
+    dispatch(clearObjects()); // önceki objeleri temizle
+    localStorage.removeItem("user");
+  };
+  
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
@@ -58,19 +64,35 @@ function App() {
   useEffect(() => {
     fetch("https://localhost:7176/api/Auth/me", {
       method: "GET",
-      credentials: "include",
+      credentials: "include", // JWT cookie için şart
     })
       .then((res) => {
         if (!res.ok) throw new Error("Unauthorized");
         return res.json();
       })
       .then((data) => {
-        dispatch(loginSuccess({ token: null, user: { email: data.email } }));
+        dispatch(loginSuccess({
+          token: null,
+          user: {
+            email: data.email,
+            role: data.role,
+            id: data.id
+          }
+        }));
+        localStorage.setItem("user", JSON.stringify({
+          email: data.email,
+          role: data.role,
+          id: data.id
+        }));
+  
+        dispatch(getFilteredObjects()); // ✅ kullanıcının verilerini sayfa yenilenince de getir
       })
       .catch((err) => {
-        dispatch(logout());
+        dispatch(logoutAndClearData());
+        localStorage.removeItem("user");
       });
   }, [dispatch]);
+  
 
   return (
     <Router>
