@@ -114,29 +114,43 @@ const UpdatePanel = () => {
         <>
         <Modal isOpen={isOpen} onClose={handleClose} title="Modify Feature">
         {selectedFeature && (
-            <>
+        <>
             <div className="form-group">
-                <label htmlFor="name">Name:</label>
-                <input
+            <label htmlFor="name">Name:</label>
+            <input
                 id="name"
                 type="text"
                 value={editedName}
                 onChange={(e) => setEditedName(e.target.value)}
                 className="edit-input"
-                />
+            />
             </div>
-
+            {selectedFeature.get
+            ? selectedFeature.get("username") && (
+                <div className="form-group">
+                    <label>Created by:</label>
+                    <p className="edit-username">{selectedFeature.get("username")}</p>
+                </div>
+                )
+            : selectedFeature.username && (
+                <div className="form-group">
+                    <label>Created by:</label>
+                    <p className="edit-username">{selectedFeature.username}</p>
+                </div>
+                )}
             <div className="form-group">
-                <label htmlFor="wkt">WKT:</label>
-                <input
+            <label htmlFor="wkt">WKT:</label>
+            <input
                 id="wkt"
                 type="text"
-                value={selectedFeature.wkt}
+                value={selectedFeature.get
+                ? selectedFeature.get("wkt") || selectedFeature.get("pointData")?.wkt
+                : selectedFeature.wkt}
                 disabled
                 className="edit-input"
-                />
+            />
             </div>
-            </>
+        </>
         )}
 
         <div className="edit-butonlari">

@@ -13,8 +13,13 @@ function Header() {
   const [isQueryPanelOpen, setIsQueryPanelOpen] = useState(false);
   const [isAddPointPanelOpen, setIsAddPointPanelOpen] = useState(false);
   const visibility = useSelector(state => state.Edit.edit);
-  const user = useSelector(state => state.auth.user);
+  const { user, isInitialized } = useSelector(state => state.auth);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  if (!isInitialized) {
+    return null;
+  }  
+  
   const handleLogout = async () => {
     try {
       await fetch("https://localhost:7176/api/Auth/logout", {
@@ -24,7 +29,7 @@ function Header() {
 
       dispatch(logout());
       localStorage.removeItem("user");
-navigate("/login", { replace: true });
+      navigate("/login", { replace: true });
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -35,11 +40,6 @@ navigate("/login", { replace: true });
       <header className="Header">
         <div className="header-top">
           <h1>Turkey Map</h1>
-          {user && (
-            <div className="logout-container">
-              <button onClick={handleLogout} className="logout-button">Log Out</button>
-            </div>
-          )}
         </div>
 
         <div className="button-group">
@@ -60,6 +60,27 @@ navigate("/login", { replace: true });
           isOpen={isQueryPanelOpen} 
           onClose={() => setIsQueryPanelOpen(false)} 
         />    
+        <div className="header-right">
+  {user ? (
+    <div
+      className="dropdown"
+      onMouseEnter={() => setIsDropdownOpen(true)}
+      onMouseLeave={() => setIsDropdownOpen(false)}
+    >
+      <span className="welcome-text">
+        {user?.username ? `WELCOME, ${user.username}` : "..."}
+      </span>
+          {isDropdownOpen && (
+            <div className="dropdown-content">
+              <button onClick={handleLogout}>Logout</button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <button onClick={() => navigate("/login")}>Login</button>
+      )}
+    </div>
+
       </header>
     )
   );

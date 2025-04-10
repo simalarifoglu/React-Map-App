@@ -54,12 +54,6 @@ function App() {
     localStorage.removeItem("user");
   };
   
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) {
-      dispatch(loginSuccess({ token: null, user: JSON.parse(savedUser) }));
-    }
-  }, [dispatch]);
 
   useEffect(() => {
     fetch("https://localhost:7176/api/Auth/me", {
@@ -71,27 +65,22 @@ function App() {
         return res.json();
       })
       .then((data) => {
-        dispatch(loginSuccess({
-          token: null,
-          user: {
-            email: data.email,
-            role: data.role,
-            id: data.id
-          }
-        }));
-        localStorage.setItem("user", JSON.stringify({
+        const userData = {
           email: data.email,
           role: data.role,
-          id: data.id
-        }));
-  
+          id: data.id,
+          username: data.username
+        };
+        
+        dispatch(loginSuccess({ token: null, user: userData }));
+        localStorage.setItem("user", JSON.stringify(userData));
         dispatch(getFilteredObjects());
       })
       .catch((err) => {
-        dispatch(logoutAndClearData());
-        localStorage.removeItem("user");
+        logoutAndClearData();
       });
   }, [dispatch]);
+  
   
 
   return (

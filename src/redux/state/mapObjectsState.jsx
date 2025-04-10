@@ -107,9 +107,28 @@ export const objectSlice = createSlice({
     },      
     extraReducers : (builder) => {
         builder
-        .addCase(getFilteredObjects.fulfilled, (state, action)=> {
+        .addCase(getFilteredObjects.fulfilled, (state, action) => {
             state.objects = action.payload;
-        })
+          
+            vectorSource.clear();
+          
+            const wktFormat = new WKT();
+          
+            action.payload.forEach((item) => {
+              const geometry = wktFormat.readGeometry(item.wkt);
+              geometry.transform("EPSG:4326", "EPSG:3857");
+          
+              const feature = new Feature({
+                geometry: geometry,
+                pointData: item
+              });
+          
+              feature.set("username", item.createdByUsername);
+              feature.setId(item.id);
+              vectorSource.addFeature(feature);
+            });
+          })
+          
         .addCase(addFeature.fulfilled, (state, action) => {
             state.objects.push(action.payload);
           
@@ -121,6 +140,7 @@ export const objectSlice = createSlice({
               geometry: geometry,
               pointData: action.payload
             });
+            feature.set("username", action.payload.createdByUsername);
             feature.setId(action.payload.id);
             vectorSource.addFeature(feature);
           })
@@ -135,6 +155,9 @@ export const objectSlice = createSlice({
               geometry: geometry,
               pointData: action.payload
             });
+            feature.set("username", action.payload.createdByUsername);
+            console.log("Payload:", action.payload);
+
             feature.setId(action.payload.id);
             vectorSource.addFeature(feature);
           })
@@ -149,6 +172,7 @@ export const objectSlice = createSlice({
               geometry: geometry,
               pointData: action.payload
             });
+            feature.set("username", action.payload.createdByUsername);
             feature.setId(action.payload.id);
             vectorSource.addFeature(feature);
           })

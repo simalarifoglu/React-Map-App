@@ -5,6 +5,7 @@ import { loginSuccess } from "../redux/state/authState";
 import { useNavigate } from "react-router-dom";
 import { clearObjects } from "../redux/state/mapObjectsState";
 import { vectorSource } from "../utils/MapView";
+import { loginSuccessAndReset } from "../redux/state/authState";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -22,62 +23,51 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+  
     if (!isValidEmail(email)) {
       setEmailError("Geçerli bir e-posta adresi girin.");
       return;
     }
+  
     setEmailError("");
     setErrorMessage("");
     setSuccessMessage("");
   
-    fetch("https://localhost:7176/api/Auth/login", {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, rememberMe }),
-    })
-    .then((res) => res.json())
-    .then((data) => {
-      dispatch(clearObjects());
-      vectorSource.clear();
-      dispatch(loginSuccess({
-        token: null,
-        user: {
-          email: data.email,
-          role: data.role,
-          id: data.id
-        }
-      }));
-    
-      localStorage.setItem("user", JSON.stringify({
-        email: data.email,
-        role: data.role,
-        id: data.id
-      }));
-    
-      navigate("/map");
-    });
-    
-    if (response.ok) {
-      const meRes = await fetch("https://localhost:7176/api/Auth/me", {
-        method: "GET",
+    try {
+      const response = await fetch("https://localhost:7176/api/Auth/login", {
+        method: "POST",
         credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, rememberMe }),
       });
   
-      if (meRes.ok) {
-        const meData = await meRes.json();
-        const userData = { email: meData.email };
-        dispatch(loginSuccess({ token: null, user: userData }));
-        localStorage.setItem("user", JSON.stringify(userData));
-        navigate("/map", { replace: true });
-      } else {
-        setErrorMessage("Login was successful but user information could not be obtained.");
-      }
-    } else {
       const data = await response.json();
-      setErrorMessage(data.message || "Login failed");
+  
+      if (!response.ok) {
+        setErrorMessage(data.message || "Login failed");
+        return;
+      }
+  
+      dispatch(clearObjects());
+      vectorSource.clear();
+  
+      const userData = {
+        email: data.email,
+        role: data.role,
+        id: data.id,
+        username: data.username,
+      };
+  
+      await dispatch(loginSuccessAndReset(userData));
+      localStorage.setItem("user", JSON.stringify(userData));
+      navigate("/map");
+  
+    } catch (err) {
+      console.error("Login error:", err);
+      setErrorMessage("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
+  
   
 
   return (

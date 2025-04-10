@@ -36,8 +36,9 @@ export const logoutAndClearData = () => (dispatch) => {
 };
 
 export const loginSuccessAndReset = (user) => async (dispatch) => {
+  console.log("Kullanıcı login oldu:", user); 
   dispatch(clearObjects());
-  dispatch(loginSuccess({ token: null, user }));
+  dispatch(loginSuccess({ token: null, user: user }));
   await dispatch(getFilteredObjects());
 };
 

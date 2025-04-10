@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Register() {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function Register() {
     const response = await fetch("https://localhost:7176/api/Auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, username }),
     });
 
     const data = await response.json();
@@ -44,7 +45,16 @@ export default function Register() {
     <main className="auth-container">
       <form className="auth-section" onSubmit={handleRegister}>
         <div className="auth-title">REGISTER</div>
-
+        <div className="auth-input-group">
+          <input
+            type="text"
+            placeholder="Username"
+            className="auth-input"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
         <div className="auth-input-group">
           <input
             type="email"
