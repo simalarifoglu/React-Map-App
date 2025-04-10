@@ -17,30 +17,37 @@ export default function Register() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+  
     if (!isValidEmail(email)) {
       setEmailError("Geçerli bir e-posta adresi girin.");
       return;
     }
+  
     setEmailError("");    
     setErrorMessage("");
     setSuccessMessage("");
-
-    const response = await fetch("https://localhost:7176/api/Auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, username }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      setSuccessMessage("Registration successful! You can now log in.");
-      navigate("/login");
-    } else {
-      setErrorMessage(data.message || "Registration failed!");
+  
+    try {
+      const response = await fetch("https://localhost:7176/api/Auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, username }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        setSuccessMessage("Registration successful! You can log in.");
+        navigate("/login");
+      } else {
+        setErrorMessage(data.message || "Registration failed!");
+      }
+    } catch (error) {
+      console.error("Register error:", error);
+      setErrorMessage("Server error: Please try again later.");
     }
   };
-
+  
   return (
     <main className="auth-container">
       <form className="auth-section" onSubmit={handleRegister}>
