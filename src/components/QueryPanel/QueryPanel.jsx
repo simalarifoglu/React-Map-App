@@ -21,6 +21,8 @@ const QueryPanel = ({ isOpen, onClose }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 7;
+    const user = useSelector((state) => state.auth.user|| {});
+    const isAdmin = user?.role === "admin";
 
     useEffect(() => {
         if (isOpen) {
@@ -124,19 +126,21 @@ const QueryPanel = ({ isOpen, onClose }) => {
                                 <tr>
                                     <th>Name</th>
                                     <th>WKT</th>
+                                    {isAdmin && <th>Created By</th>}
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {paginatedObjects.length > 0 ? (
-                                paginatedObjects.map(item => (
-                                    <tr key={item.id}>
-                                    <td>{item.name}</td>
-                                    <td>{item.wkt}</td>
+                                paginatedObjects.map(obj => (
+                                    <tr key={obj.id}>
+                                    <td>{obj.name}</td>
+                                    <td>{obj.wkt}</td>
+                                    {isAdmin && <td>{obj.createdByUsername || "-"}</td>}
                                     <td>
-                                        <button className="update-btn" onClick={() => handleShow(item.id)}>Show</button>
-                                        <button className="save-btn" onClick={() => handleEdit(item.id)}>Update</button>
-                                        <button className="delete-btn" onClick={() => handleDelete(item.id)}>Delete</button>
+                                        <button className="update-btn" onClick={() => handleShow(obj.id)}>Show</button>
+                                        <button className="save-btn" onClick={() => handleEdit(obj.id)}>Update</button>
+                                        <button className="delete-btn" onClick={() => handleDelete(obj.id)}>Delete</button>
                                     </td>
                                     </tr>
                                 ))

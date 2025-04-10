@@ -17,6 +17,8 @@ const UpdatePanel = () => {
     const selectedFeature = useSelector(state => state.feature.feature);
     const isEdit = useSelector(state => state.panel.isEdit)
     const isOpen = useSelector((state) => state.panel.isOpen);
+    const user = useSelector((state) => state.auth.user);
+    const isAdmin = user?.role === "admin";
     const [isEditing, setIsEditing] = useState(false); 
     const [editedName, setEditedName] = useState("");
     const [editedWkt, setEditedWkt] = useState("");
@@ -110,11 +112,27 @@ const UpdatePanel = () => {
     const onEditFunction = () =>{
         dispatch(onEdit());
     }
+    console.log("Feature:", selectedFeature);
+    console.log("get(username):", selectedFeature?.get?.("username"));
+    console.log("get(pointData):", selectedFeature?.get?.("pointData"));
+    console.log("createdByUsername:", selectedFeature?.get?.("pointData")?.createdByUsername);
+    
+    const username =
+    typeof selectedFeature?.get === "function"
+      ? selectedFeature.get("createdByUsername") || selectedFeature.get("username") || selectedFeature.get("pointData")?.createdByUsername
+      : selectedFeature?.createdByUsername || selectedFeature?.username || selectedFeature?.pointData?.createdByUsername;
+  
+
     return (
         <>
         <Modal isOpen={isOpen} onClose={handleClose} title="Modify Feature">
         {selectedFeature && (
         <>
+            {isAdmin && username && (
+                <div className="form-group">
+                    <label className="edit-username">Created by: {username}</label>
+                </div>              
+            )}
             <div className="form-group">
             <label htmlFor="name">Name:</label>
             <input
@@ -125,19 +143,6 @@ const UpdatePanel = () => {
                 className="edit-input"
             />
             </div>
-            {selectedFeature.get
-            ? selectedFeature.get("username") && (
-                <div className="form-group">
-                    <label>Created by:</label>
-                    <p className="edit-username">{selectedFeature.get("username")}</p>
-                </div>
-                )
-            : selectedFeature.username && (
-                <div className="form-group">
-                    <label>Created by:</label>
-                    <p className="edit-username">{selectedFeature.username}</p>
-                </div>
-                )}
             <div className="form-group">
             <label htmlFor="wkt">WKT:</label>
             <input

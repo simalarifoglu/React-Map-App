@@ -140,7 +140,9 @@ export const objectSlice = createSlice({
               geometry: geometry,
               pointData: action.payload
             });
+            feature.set("createdByUsername", action.payload.createdByUsername);
             feature.set("username", action.payload.createdByUsername);
+            
             feature.setId(action.payload.id);
             vectorSource.addFeature(feature);
           })
@@ -155,7 +157,9 @@ export const objectSlice = createSlice({
               geometry: geometry,
               pointData: action.payload
             });
+            feature.set("createdByUsername", action.payload.createdByUsername);
             feature.set("username", action.payload.createdByUsername);
+            
             console.log("Payload:", action.payload);
 
             feature.setId(action.payload.id);
@@ -172,7 +176,9 @@ export const objectSlice = createSlice({
               geometry: geometry,
               pointData: action.payload
             });
+            feature.set("createdByUsername", action.payload.createdByUsername);
             feature.set("username", action.payload.createdByUsername);
+            
             feature.setId(action.payload.id);
             vectorSource.addFeature(feature);
           })

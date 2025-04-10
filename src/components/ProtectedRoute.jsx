@@ -6,7 +6,6 @@ export default function ProtectedRoute({ children }) {
   const isInitialized = useSelector((state) => state.auth.isInitialized);
 
   console.log("User:", user);
-  console.log("isInitialized:", isInitialized);
 
   if (!isInitialized) {
     return <div>Loading...</div>;
