@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import AddPointPanel from '../AddPointPanel/AddPointPanel';
 import QueryPanel from '../QueryPanel/QueryPanel';
 import enableDrawMode from '../../utils/DrawPoint';
-import AdminPanel from "../AdminPanel/AdminPanel";
+import AdminPanel from "../Admin/AdminPanel";
 import { logout } from '../../redux/state/authState';
 import './Header.css';
 
