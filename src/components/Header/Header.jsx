@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import AddPointPanel from '../AddPointPanel/AddPointPanel';
 import QueryPanel from '../QueryPanel/QueryPanel';
 import enableDrawMode from '../../utils/DrawPoint';
+import AdminPanel from "../AdminPanel/AdminPanel";
 import { logout } from '../../redux/state/authState';
 import './Header.css';
 
@@ -15,6 +16,7 @@ function Header() {
   const visibility = useSelector(state => state.Edit.edit);
   const { user, isInitialized } = useSelector(state => state.auth);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
 
   if (!isInitialized) {
     return null;
@@ -37,53 +39,62 @@ function Header() {
 
   return (
     !visibility && (
-      <header className="Header">
-        <div className="header-top">
-          <h1>Turkey Map</h1>
-        </div>
-
-        <div className="button-group">
-          <button onClick={() => enableDrawMode('Point', dispatch, setIsAddPointPanelOpen)}>Add Point</button>
-          <button onClick={() => enableDrawMode('LineString', dispatch, setIsAddPointPanelOpen)}>Add Linestring</button>
-          <button onClick={() => enableDrawMode('Polygon', dispatch, setIsAddPointPanelOpen)}>Add Polygon</button>
-          <button onClick={() => setIsQueryPanelOpen(true)}>Query Panel</button>
-        </div>
-
-        <AddPointPanel
-          isOpen={isAddPointPanelOpen} 
-          onClose={() => setIsAddPointPanelOpen(false)}
-          title={<span className="add-feature-title">Add Object</span>}
-          position="right"
+      <>
+        <header className="Header">
+          <div className="header-top">
+            <h1>Turkey Map</h1>
+          </div>
+  
+          <div className="button-group">
+            <button onClick={() => enableDrawMode('Point', dispatch, setIsAddPointPanelOpen)}>Add Point</button>
+            <button onClick={() => enableDrawMode('LineString', dispatch, setIsAddPointPanelOpen)}>Add Linestring</button>
+            <button onClick={() => enableDrawMode('Polygon', dispatch, setIsAddPointPanelOpen)}>Add Polygon</button>
+            <button onClick={() => setIsQueryPanelOpen(true)}>Query Panel</button>
+          </div>
+  
+          <AddPointPanel
+            isOpen={isAddPointPanelOpen} 
+            onClose={() => setIsAddPointPanelOpen(false)}
+            title={<span className="add-feature-title">Add Object</span>}
+            position="right"
+          />
+  
+          <QueryPanel 
+            isOpen={isQueryPanelOpen} 
+            onClose={() => setIsQueryPanelOpen(false)} 
+          />
+  
+          <div className="header-right">
+            {user ? (
+              <div
+                className="dropdown"
+                onMouseEnter={() => setIsDropdownOpen(true)}
+                onMouseLeave={() => setIsDropdownOpen(false)}
+              >
+                <span className="welcome-text">
+                  {user?.username ? `WELCOME, ${user.username}` : "..."}
+                </span>
+                {isDropdownOpen && (
+                  <div className="dropdown-content">
+                    {user?.role === "admin" && (
+                      <button onClick={() => setIsAdminPanelOpen(true)}>Admin Panel</button>
+                    )}
+                    <button onClick={handleLogout}>Logout</button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button onClick={() => navigate("/login")}>Login</button>
+            )}
+          </div>
+        </header>
+  
+        <AdminPanel
+          isOpen={isAdminPanelOpen}
+          onClose={() => setIsAdminPanelOpen(false)}
         />
-
-        <QueryPanel 
-          isOpen={isQueryPanelOpen} 
-          onClose={() => setIsQueryPanelOpen(false)} 
-        />    
-        <div className="header-right">
-  {user ? (
-    <div
-      className="dropdown"
-      onMouseEnter={() => setIsDropdownOpen(true)}
-      onMouseLeave={() => setIsDropdownOpen(false)}
-    >
-      <span className="welcome-text">
-        {user?.username ? `WELCOME, ${user.username}` : "..."}
-      </span>
-          {isDropdownOpen && (
-            <div className="dropdown-content">
-              <button onClick={handleLogout}>Logout</button>
-            </div>
-          )}
-        </div>
-      ) : (
-        <button onClick={() => navigate("/login")}>Login</button>
-      )}
-    </div>
-
-      </header>
+      </>
     )
   );
-}
-
+}  
 export default Header;
