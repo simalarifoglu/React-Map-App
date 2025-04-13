@@ -1,0 +1,62 @@
+.user-details-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1005;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .user-details-panel {
+    background: #fff;
+    width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    position: relative;
+  }
+  
+  .user-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .user-details-header h2 {
+    font-size: 1.6rem;
+    color: #712f2f;
+  }
+  
+  .close-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: #b8503b;
+  }
+  
+  .details-section {
+    margin-bottom: 30px;
+    padding: 10px 15px;
+    border-left: 5px solid #b8503b;
+    background-color: #fff2ee;
+    border-radius: 6px;
+  }
+  
+  .details-section h3 {
+    margin-bottom: 10px;
+    color: #4d1d1d;
+  }
+  
+  .details-section ul {
+    padding-left: 18px;
+    color: #444;
+  }
+  

@@ -40,7 +40,7 @@ const QueryPanel = ({ isOpen, onClose }) => {
         const feature = objects.find(obj => obj.id === id);
         if (feature) {
             
-            dispatch(setFeature(feature))
+            dispatch(setFeature(feature.getProperties()))
             dispatch(openPanel())
             dispatch(onEditPanel());
         }
@@ -127,31 +127,46 @@ const QueryPanel = ({ isOpen, onClose }) => {
                                     <th>Name</th>
                                     <th>WKT</th>
                                     {isAdmin && <th>Created By</th>}
+                                    {isAdmin && <th>Created At</th>}
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {paginatedObjects.length > 0 ? (
+                            {paginatedObjects.length > 0 ? (
                                 paginatedObjects.map(obj => (
-                                    <tr key={obj.id}>
+                                <tr key={obj.id}>
                                     <td>{obj.name}</td>
                                     <td>{obj.wkt}</td>
                                     {isAdmin && <td>{obj.createdByUsername || "-"}</td>}
+                                    {isAdmin && (
                                     <td>
-                                        <button className="update-btn" onClick={() => handleShow(obj.id)}>Show</button>
-                                        <button className="save-btn" onClick={() => handleEdit(obj.id)}>Update</button>
-                                        <button className="delete-btn" onClick={() => handleDelete(obj.id)}>Delete</button>
+                                        {obj.createdAt
+                                        ? new Date(obj.createdAt).toLocaleString("en-GB", {
+                                            day: "2-digit",
+                                            month: "short",
+                                            year: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit"
+                                            })
+                                        : "-"}
                                     </td>
-                                    </tr>
-                                ))
-                                ) : (
-                                <tr>
-                                    <td colSpan="3" style={{ textAlign: 'center', color: '#b8503b' }}>
-                                    No matching results found.
+                                    )}
+                                    <td>
+                                    <button className="update-btn" onClick={() => handleShow(obj.id)}>Show</button>
+                                    <button className="save-btn" onClick={() => handleEdit(obj.id)}>Update</button>
+                                    <button className="delete-btn" onClick={() => handleDelete(obj.id)}>Delete</button>
                                     </td>
                                 </tr>
-                                )}
-                        </tbody>
+                                ))
+                            ) : (
+                                <tr>
+                                <td colSpan="4" style={{ textAlign: 'center', color: '#b8503b' }}>
+                                    No matching results found.
+                                </td>
+                                </tr>
+                            )}
+                            </tbody>
+
                         </table>
                     </div>
                     <div className="pagination">

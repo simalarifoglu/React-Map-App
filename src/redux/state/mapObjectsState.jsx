@@ -108,6 +108,8 @@ export const objectSlice = createSlice({
     extraReducers : (builder) => {
         builder
         .addCase(getFilteredObjects.fulfilled, (state, action) => {
+
+          console.log("Filtered Data:", action.payload);
             state.objects = action.payload;
           
             vectorSource.clear();
@@ -124,6 +126,8 @@ export const objectSlice = createSlice({
               });
           
               feature.set("username", item.createdByUsername);
+              feature.set("createdByUsername", item.createdByUsername);
+              feature.set("createdAt", item.createdAt);
               feature.setId(item.id);
               vectorSource.addFeature(feature);
             });
@@ -142,6 +146,7 @@ export const objectSlice = createSlice({
             });
             feature.set("createdByUsername", action.payload.createdByUsername);
             feature.set("username", action.payload.createdByUsername);
+            feature.set("createdAt", action.payload.createdAt);
             
             feature.setId(action.payload.id);
             vectorSource.addFeature(feature);
@@ -159,6 +164,7 @@ export const objectSlice = createSlice({
             });
             feature.set("createdByUsername", action.payload.createdByUsername);
             feature.set("username", action.payload.createdByUsername);
+            feature.set("createdAt", action.payload.createdAt);
             
             console.log("Payload:", action.payload);
 
@@ -178,6 +184,7 @@ export const objectSlice = createSlice({
             });
             feature.set("createdByUsername", action.payload.createdByUsername);
             feature.set("username", action.payload.createdByUsername);
+            feature.set("createdAt", action.payload.createdAt);
             
             feature.setId(action.payload.id);
             vectorSource.addFeature(feature);

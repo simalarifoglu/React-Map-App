@@ -3,6 +3,7 @@ import "./AdminMainPanel.css";
 import ConfirmPanel from "../ConfirmPanel/ConfirmPanel";
 import { toast } from "react-toastify";
 import Fuse from "fuse.js";
+import React from "react";
 
 const UserPanel = () => {
   const [users, setUsers] = useState([]);
@@ -13,6 +14,8 @@ const UserPanel = () => {
   const perPage = 10;
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedDetails, setSelectedDetails] = useState(null);
+  const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
 
   useEffect(() => {
     fetch("https://localhost:7176/api/Auth/users", {
@@ -50,6 +53,31 @@ const UserPanel = () => {
     setSelectedUserId(null);
     setIsConfirmOpen(false);
   };
+
+  const fetchUserDetails = async (userId) => {
+    try {
+      const response = await fetch(`https://localhost:7176/api/Auth/user-objects-summary/${userId}`, {
+        credentials: "include"
+      });
+      const data = await response.json();
+      setSelectedDetails(data);
+      setIsDetailsPanelOpen(true);
+    } catch (err) {
+      console.error("Detaylar alınamadı:", err);
+    }
+  };
+
+  const formatDate = (iso) => {
+    if (!iso) return "-";
+    const date = new Date(iso);
+    return date.toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };  
 
   const fuse = useMemo(() => {
     return new Fuse(users, {
@@ -137,11 +165,11 @@ const UserPanel = () => {
           {paginated.length > 0 ? (
             paginated.map(({ item, matches }) => (
               <tr key={item.id}>
-<td className="highlight-cell">{highlightMatch(item.username, matches, "username")}</td>
-<td className="highlight-cell">{highlightMatch(item.email, matches, "email")}</td>
-
+                <td className="highlight-cell">{highlightMatch(item.username, matches, "username")}</td>
+                <td className="highlight-cell">{highlightMatch(item.email, matches, "email")}</td>
                 <td>{item.role}</td>
                 <td>
+                  <button className="view-btn" onClick={() => fetchUserDetails(item.id)}>View Details</button>
                   <button className="delete-btn" onClick={() => handleDeleteUser(item.id)}>Delete</button>
                 </td>
               </tr>
@@ -153,6 +181,51 @@ const UserPanel = () => {
           )}
         </tbody>
       </table>
+
+      {isDetailsPanelOpen && (
+        <div className="overlay-modal">
+          <div className="details-modal-centered">
+            <div className="details-header">
+              <h3>User Object Details</h3>
+              <button onClick={() => setIsDetailsPanelOpen(false)} className="close-btn">X</button>
+            </div>
+
+            <table className="details-table">
+              <thead>
+                <tr>
+                  <th>Object</th>
+                  <th>Count</th>
+                  <th>Created At</th>
+                </tr>
+              </thead>
+              <tbody>
+                {["point", "linestring", "polygon"].map((type) => {
+                  const details = selectedDetails?.[type];
+                  const created = details?.createdAtList || [];
+
+                  const maxLength = Math.max(created.length, 1);
+
+                  return (
+                    <React.Fragment key={type}>
+                      {Array.from({ length: maxLength }).map((_, index) => (
+                        <tr key={`${type}-${index}`}>
+                          {index === 0 ? (
+                            <>
+                              <td rowSpan={maxLength} style={{ fontWeight: "bold", verticalAlign: "top" }}>{type}</td>
+                              <td rowSpan={maxLength}>{details?.count ?? 0}</td>
+                            </>
+                          ) : null}
+                          <td>{created[index] ? formatDate(created[index]) : "-"}</td>
+                        </tr>
+                      ))}
+                    </React.Fragment>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       <div className="admin-pagination">
         <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1}>&laquo;</button>

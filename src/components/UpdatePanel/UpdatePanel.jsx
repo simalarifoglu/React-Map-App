@@ -128,11 +128,27 @@ const UpdatePanel = () => {
         <Modal isOpen={isOpen} onClose={handleClose} title="Modify Feature">
         {selectedFeature && (
         <>
-            {isAdmin && username && (
-                <div className="form-group">
-                    <label className="edit-username">Created by: {username}</label>
-                </div>              
-            )}
+        {isAdmin && selectedFeature?.createdByUsername && (
+        <div className="form-group">
+            <label className="edit-username">Created By: {selectedFeature.createdByUsername}</label>
+        </div>
+        )}
+
+        {isAdmin && selectedFeature?.createdAt && (
+        <div className="form-group">
+            <label className="edit-username">
+            Created At:{" "}
+            {new Date(selectedFeature.createdAt).toLocaleString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            })}
+            </label>
+        </div>
+        )}
+
             <div className="form-group">
             <label htmlFor="name">Name:</label>
             <input
@@ -148,11 +164,7 @@ const UpdatePanel = () => {
             <input
                 id="wkt"
                 type="text"
-                value={selectedFeature.get
-                ? selectedFeature.get("wkt") || selectedFeature.get("pointData")?.wkt
-                : selectedFeature.wkt}
-                disabled
-                className="edit-input"
+                value={selectedFeature?.wkt || ""}
             />
             </div>
         </>

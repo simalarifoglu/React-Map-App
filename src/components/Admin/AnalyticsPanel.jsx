@@ -83,8 +83,7 @@ const AnalyticsPanel = () => {
         <div className="analytics-box"><h3>Total Polygons</h3><p>{data.polygonCount}</p></div>
         <div className="analytics-box"><h3>Total Objects</h3><p>{data.objectCount}</p></div>
       </div>
-
-      {/* GRAFİKLER */}
+      
       <div className="chart-wrapper">
         <div className="chart-bar">
           <ResponsiveContainer width="100%" height={250}>
