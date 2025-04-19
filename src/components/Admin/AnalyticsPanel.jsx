@@ -85,17 +85,6 @@ const AnalyticsPanel = () => {
       </div>
       
       <div className="chart-wrapper">
-        <div className="chart-bar">
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={chartData}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" fill="#b8503b" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
 
         <div className="chart-pie">
           <ResponsiveContainer width="100%" height={300}>

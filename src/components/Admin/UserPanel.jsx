@@ -4,7 +4,7 @@ import ConfirmPanel from "../ConfirmPanel/ConfirmPanel";
 import { toast } from "react-toastify";
 import React from "react";
 import zoomToFeature from "../../utils/ZoomPoint";
-import { getMap, vectorSource } from "../../utils/MapView";
+import { getMap } from "../../utils/MapView";
 
 const UserPanel = ({ onCloseAdminPanel }) => {
   const [users, setUsers] = useState([]);
@@ -15,10 +15,8 @@ const UserPanel = ({ onCloseAdminPanel }) => {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedDetails, setSelectedDetails] = useState(null);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
-  const [openSection, setOpenSection] = useState(null);
   const [selectedUsername, setSelectedUsername] = useState("");
   const [selectedGeometryType, setSelectedGeometryType] = useState("POINT");
-
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -66,15 +64,17 @@ const UserPanel = ({ onCloseAdminPanel }) => {
 
   const fetchUserDetails = async (userId) => {
     try {
-      const response = await fetch(`https://localhost:7176/api/Auth/user-objects-summary/${userId}`, {
-        credentials: "include"
-      });
-      const data = await response.json();
-      console.log("selectedDetails:", data);
+      const [summaryRes, objectRes] = await Promise.all([
+        fetch(`https://localhost:7176/api/Auth/user-objects-summary/${userId}`, { credentials: "include" }),
+        fetch(`https://localhost:7176/api/Auth/user-objects/${userId}`, { credentials: "include" })
+      ]);
 
+      const summary = await summaryRes.json();
+      const objects = await objectRes.json();
       const user = users.find(u => u.id === userId);
+
       setSelectedUsername(user?.username || "");
-      setSelectedDetails(data);
+      setSelectedDetails({ summary, objects });
       setIsDetailsPanelOpen(true);
     } catch (err) {
       console.error("Detaylar alınamadı:", err);
@@ -85,7 +85,9 @@ const UserPanel = ({ onCloseAdminPanel }) => {
     const map = getMap();
     if (!map) return;
 
-    const targetFeature = vectorSource.getFeatures().find(f => {
+    const targetFeature = map.getLayers().getArray().flatMap(layer =>
+      layer.getSource()?.getFeatures?.() || []
+    ).find(f => {
       const pointData = f.get("pointData");
       return (
         pointData?.createdAt &&
@@ -115,10 +117,6 @@ const UserPanel = ({ onCloseAdminPanel }) => {
     });
   };
 
-  const toggleSection = (section) => {
-    setOpenSection((prev) => (prev === section ? null : section));
-  };
-
   const shortenWkt = (wkt, maxLen = 100) => {
     if (!wkt) return "-";
     return wkt.length > maxLen ? `${wkt.slice(0, maxLen)}...` : wkt;
@@ -129,22 +127,6 @@ const UserPanel = ({ onCloseAdminPanel }) => {
     const type = wkt.trim().split("(")[0].toUpperCase();
     return type;
   };
-
-  const groupedFeatures = {
-    POINT: [],
-    LINESTRING: [],
-    POLYGON: []
-  };
-
-  vectorSource.getFeatures().forEach(f => {
-    const pd = f.get("pointData");
-    if (pd?.wkt) {
-      const type = getWktType(pd.wkt);
-      if (groupedFeatures[type]) {
-        groupedFeatures[type].push(pd);
-      }
-    }
-  });
 
   const totalPages = Math.ceil(totalUsers / perPage);
 
@@ -186,7 +168,7 @@ const UserPanel = ({ onCloseAdminPanel }) => {
         </tbody>
       </table>
 
-      {isDetailsPanelOpen && (
+      {isDetailsPanelOpen && selectedDetails && (
         <div className="overlay-modal">
           <div className="details-modal-centered">
             <div className="details-header">
@@ -207,16 +189,12 @@ const UserPanel = ({ onCloseAdminPanel }) => {
             </div>
 
             <div className="object-detail-list">
-              {vectorSource.getFeatures().filter(f => {
-                const pd = f.get("pointData");
-                return pd && getWktType(pd.wkt) === selectedGeometryType;
-              }).map((f, i) => {
-                const pd = f.get("pointData");
-                return (
+              {selectedDetails.objects
+                .filter(pd => getWktType(pd.wkt) === selectedGeometryType)
+                .map((pd, i) => (
                   <div key={i} className="object-detail-card" onClick={() => handleObjectFocus(selectedUserId, pd.type, pd.createdAt)}>
                     <div><strong>Created At:</strong> {formatDate(pd.createdAt)}</div>
                     <div><strong>Name:</strong> {pd.name || "-"}</div>
-                    <div><strong>Created By:</strong> {pd.createdByUsername || "-"}</div>
                     <div>
                       <strong>WKT:</strong>{" "}
                       <code style={{ fontSize: "0.75rem", wordBreak: "break-word" }}>
@@ -224,8 +202,7 @@ const UserPanel = ({ onCloseAdminPanel }) => {
                       </code>
                     </div>
                   </div>
-                );
-              })}
+                ))}
             </div>
           </div>
         </div>

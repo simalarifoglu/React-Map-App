@@ -25,6 +25,17 @@ const authSlice = createSlice({
       state.user = action.payload;
       state.isInitialized = true;
     },
+
+    extraReducers: (builder) => {
+      builder.addCase("UPDATE_USER", (state, action) => {
+        if (state.user) {
+          state.user = {
+            ...state.user,
+            ...action.payload,
+          };
+        }
+      });
+    }
   },
 });
 
@@ -41,5 +52,11 @@ export const loginSuccessAndReset = (user) => async (dispatch) => {
   dispatch(loginSuccess({ token: null, user: user }));
   await dispatch(getFilteredObjects());
 };
+
+export const updateUser = (updatedUser) => ({
+  type: "UPDATE_USER",
+  payload: updatedUser,
+});
+
 
 export default authSlice.reducer;

@@ -715,4 +715,236 @@
     color: white;
     font-weight: bold;
   }
+
+  .admin-settings {
+    background: #fffaf7;
+    padding: 30px;
+    border-radius: 10px;
+    height: auto;
+    margin-top: 30px;
+    height: 800px;
+  }
   
+  .admin-settings h2 {
+    font-size: 2rem;
+    text-align: left;
+    margin-bottom: 32px;
+    color: #712f2f;
+    padding-left: 8px;
+  }
+  
+  
+  .form-group {
+    margin-bottom: 22px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #5c1c1c;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d39686;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #fff5f1;
+    color: #4d1d1d;
+    transition: border-color 0.3s;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: #b8503b;
+    box-shadow: 0 0 0 3px rgba(184, 80, 59, 0.15);
+  }
+  
+  .password-input-wrapper {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .password-input-wrapper input {
+    flex: 1;
+  }
+  
+  .password-input-wrapper button {
+    background-color: #f0e0da;
+    color: #5a2a1a;
+    border: 1px solid #d39686;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .password-input-wrapper button:hover {
+    background-color: #edd5cd;
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  
+  .logs-panel {
+    background: #fffaf7;
+    padding: 30px;
+    border-radius: 10px;
+    height: auto;
+    margin-top: 30px;
+    height: 800px;
+  }
+  
+  /* Başlık */
+  .logs-panel h2 {
+    margin-bottom: 24px;
+    font-size: 1.6rem;
+    color: #3d1e1e;
+    font-weight: 600;
+  }
+  
+  /* Search ve Dropdown */
+  .logs-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  
+  .logs-controls input[type="text"] {
+    padding: 10px 14px;
+    border: 1px solid #e6c1b7;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background-color: #fffdfa;
+    color: #5a2a17;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: border 0.3s ease;
+    min-width: 240px;
+    flex: 1;
+  }
+  
+  .logs-controls input[type="text"]:focus {
+    outline: none;
+    border-color: #c67058;
+  }
+  
+  .logs-controls select {
+    padding: 10px 14px;
+    border: 1px solid #e6c1b7;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background-color: #fffdfa;
+    color: #5a2a17;
+    cursor: pointer;
+    min-width: 160px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+  }
+  
+  .logs-controls select:hover {
+    background-color: #fcece6;
+  }
+  
+  /* Tarih başlığı */
+  .logs-panel h4 {
+    margin-top: 30px;
+    color: #5a2a17;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  
+  /* Tablo */
+  .logs-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+  }
+  
+  .logs-table th,
+  .logs-table td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .logs-table th {
+    background-color: #e6b9b2;
+    color: #5b2323;
+  }
+  
+  .logs-table tr:nth-child(even) {
+    background-color: #fef1ec;
+  }
+  
+  .logs-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  
+  .logs-controls input[type="text"] {
+    padding: 10px 14px;
+    border: 1px solid #d6a089;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background-color: #fffdfa;
+    color: #5a2a17;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    transition: border 0.3s ease;
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .logs-controls input[type="text"]:focus {
+    outline: none;
+    border-color: #b65b3c;
+  }
+  
+  .logs-controls select {
+    padding: 10px 14px;
+    border: 1px solid #d6a089;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background-color: #fffdfa;
+    color: #5a2a17;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    min-width: 150px;
+    transition: all 0.2s ease;
+  }
+  
+  .logs-controls select:hover {
+    background-color: #fcece6;
+  }
+  
+  /* Arama kutusu içinde ikon görünümü için (opsiyonel) */
+.logs-controls .search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+}
+
+.logs-controls .search-wrapper input {
+  width: 100%;
+  padding-left: 36px;
+}
+
+.logs-controls .search-wrapper::before {
+  content: "🔍";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #b65b3c;
+  font-size: 1rem;
+}

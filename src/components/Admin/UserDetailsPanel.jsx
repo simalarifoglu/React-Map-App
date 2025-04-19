@@ -1,7 +1,7 @@
 import "./UserDetailsPanel.css";
 import { useState } from "react";
 
-const UserDetailsPanel = ({ isOpen, onClose, user, summary }) => {
+const UserDetailsPanel = ({ isOpen, onClose, user, summary, objects }) => {
   if (!isOpen || !user || !summary) return null;
 
   const [openSection, setOpenSection] = useState(null);
@@ -61,9 +61,42 @@ const UserDetailsPanel = ({ isOpen, onClose, user, summary }) => {
         </div>
 
         <div className="user-details-content">
-          {renderSection("Points", "Point", summary.Point)}
+        {renderSection("Points", "Point", summary.Point)}
           {renderSection("Linestrings", "Linestring", summary.Linestring)}
           {renderSection("Polygons", "Polygon", summary.Polygon)}
+
+          {objects && objects.length > 0 && (
+            <div className="details-section">
+              <div className="section-header" onClick={() => toggleSection("Objects")}>
+                <h3>Object List</h3>
+                <span>{openSection === "Objects" ? "▲" : "▼"}</span>
+              </div>
+              {openSection === "Objects" && (
+                <div className="section-body">
+                  <table className="object-table">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Created At</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {objects.map((obj) => (
+                        <tr key={obj.id}>
+                          <td>{obj.id}</td>
+                          <td>{obj.name}</td>
+                          <td>{obj.type}</td>
+                          <td>{new Date(obj.createdAt).toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

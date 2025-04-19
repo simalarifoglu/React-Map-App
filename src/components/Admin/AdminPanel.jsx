@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import UserPanel from "./UserPanel";
 import AnalyticsPanel from "./AnalyticsPanel";
+import AdminSettings from "./AdminSettings";
+import LogsPanel from "./LogsPanel";
 
 const AdminPanel = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("analytics");
@@ -17,7 +19,7 @@ const AdminPanel = ({ isOpen, onClose }) => {
         method: "POST",
         credentials: "include",
       });
-  
+
       dispatch(logout());
       localStorage.removeItem("user");
       navigate("/login", { replace: true });
@@ -25,16 +27,14 @@ const AdminPanel = ({ isOpen, onClose }) => {
       console.error("Logout failed:", error);
     }
   };
+
   const renderContent = () => {
-    switch (activeTab) {
-      case "users":
-        return <UserPanel onCloseAdminPanel={onClose} />;      
-      case "analytics":
-        return <AnalyticsPanel />;
-      case "settings":
-        return <div className="placeholder">Settings Coming Soon</div>;
-      default:
-        return null;
+    switch (activeTab.toLowerCase()) {
+      case "settings": return <AdminSettings />;
+      case "analytics": return <AnalyticsPanel />;
+      case "users": return <UserPanel onCloseAdminPanel={onClose} />;
+      case "logs": return <LogsPanel />;
+      default: return null;
     }
   };
 
@@ -46,7 +46,8 @@ const AdminPanel = ({ isOpen, onClose }) => {
           <button className={activeTab === "analytics" ? "active" : ""} onClick={() => setActiveTab("analytics")}>Analytics</button>
           <button className={activeTab === "users" ? "active" : ""} onClick={() => setActiveTab("users")}>Users</button>
           <button className={activeTab === "settings" ? "active" : ""} onClick={() => setActiveTab("settings")}>Settings</button>
-          <button className="logout-btn"onClick={handleLogout}>Logout</button>
+          <button className={activeTab === "logs" ? "active" : ""} onClick={() => setActiveTab("logs")}>Logs</button> {/* ✅ LOGS butonu */}
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
         <div className="admin-content">
           <div className="admin-panel-header">
