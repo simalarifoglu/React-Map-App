@@ -41,7 +41,7 @@ const AdminMainPanel = ({ isOpen, onClose }) => {
             <button className="close-btn" onClick={onClose}>×</button>
           </div>
 
-          {activeTab === "users" && <UserPanel />}
+          {activeTab === "users" && <UserPanel onCloseAdminPanel={onClose} />}
           {activeTab === "analytics" && <AnalyticsPanel />}
         </div>
       </div>

@@ -1,31 +1,41 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import "./AdminMainPanel.css";
 import ConfirmPanel from "../ConfirmPanel/ConfirmPanel";
 import { toast } from "react-toastify";
-import Fuse from "fuse.js";
 import React from "react";
+import zoomToFeature from "../../utils/ZoomPoint";
+import { getMap, vectorSource } from "../../utils/MapView";
 
-const UserPanel = () => {
+const UserPanel = ({ onCloseAdminPanel }) => {
   const [users, setUsers] = useState([]);
-  const [search, setSearch] = useState("");
-  const [sortField, setSortField] = useState("");
-  const [sortDir, setSortDir] = useState("asc");
+  const [totalUsers, setTotalUsers] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 10;
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedDetails, setSelectedDetails] = useState(null);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
+  const [openSection, setOpenSection] = useState(null);
+  const [selectedUsername, setSelectedUsername] = useState("");
+  const [selectedGeometryType, setSelectedGeometryType] = useState("POINT");
+
 
   useEffect(() => {
-    fetch("https://localhost:7176/api/Auth/users", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => setUsers(data.value || []))
-      .catch((err) => console.error("Kullanıcılar alınamadı:", err));
-  }, []);
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch(`https://localhost:7176/api/Auth/users?page=${currentPage}&limit=${perPage}`, {
+          credentials: "include",
+        });
+        const data = await res.json();
+        setUsers(data.value || []);
+        setTotalUsers(data.totalCount || 0);
+      } catch (err) {
+        console.error("Kullanıcılar alınamadı:", err);
+      }
+    };
+
+    fetchUsers();
+  }, [currentPage]);
 
   const handleDeleteUser = (id) => {
     setSelectedUserId(id);
@@ -60,10 +70,36 @@ const UserPanel = () => {
         credentials: "include"
       });
       const data = await response.json();
+      console.log("selectedDetails:", data);
+
+      const user = users.find(u => u.id === userId);
+      setSelectedUsername(user?.username || "");
       setSelectedDetails(data);
       setIsDetailsPanelOpen(true);
     } catch (err) {
       console.error("Detaylar alınamadı:", err);
+    }
+  };
+
+  const handleObjectFocus = (userId, type, createdAt) => {
+    const map = getMap();
+    if (!map) return;
+
+    const targetFeature = vectorSource.getFeatures().find(f => {
+      const pointData = f.get("pointData");
+      return (
+        pointData?.createdAt &&
+        new Date(pointData.createdAt).toISOString() === new Date(createdAt).toISOString()
+      );
+    });
+
+    if (targetFeature) {
+      const pointData = targetFeature.get("pointData");
+      zoomToFeature(map, pointData);
+      setIsDetailsPanelOpen(false);
+      onCloseAdminPanel?.();
+    } else {
+      console.warn("Feature not found on map.");
     }
   };
 
@@ -77,63 +113,40 @@ const UserPanel = () => {
       hour: "2-digit",
       minute: "2-digit",
     });
-  };  
-
-  const fuse = useMemo(() => {
-    return new Fuse(users, {
-      keys: ["username", "email"],
-      threshold: 0.3,
-      includeMatches: true,
-    });
-  }, [users]);
-
-  const fuseResults = useMemo(() => {
-    if (!search) return users.map(user => ({ item: user, matches: [] }));
-    return fuse.search(search);
-  }, [search, fuse]);
-
-  const sortFn = (a, b) => {
-    if (!sortField) return 0;
-    const aVal = a.item[sortField].toLowerCase();
-    const bVal = b.item[sortField].toLowerCase();
-    return sortDir === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
   };
 
-  const sortedUsers = [...fuseResults].sort(sortFn);
-  const totalPages = Math.ceil(sortedUsers.length / perPage);
-  const paginated = sortedUsers.slice((currentPage - 1) * perPage, currentPage * perPage);
-
-  const handleSort = (field) => {
-    if (sortField === field) {
-      setSortDir((prev) => (prev === "asc" ? "desc" : "asc"));
-    } else {
-      setSortField(field);
-      setSortDir("asc");
-    }
+  const toggleSection = (section) => {
+    setOpenSection((prev) => (prev === section ? null : section));
   };
 
-  const highlightMatch = (text, matches, key) => {
-    const match = matches.find((m) => m.key === key);
-    if (!match || !match.indices.length) return text;
-  
-    const parts = [];
-    let lastIndex = 0;
-  
-    match.indices.forEach(([start, end], i) => {
-      if (lastIndex < start) {
-        parts.push(<span key={`normal-${i}`}>{text.slice(lastIndex, start)}</span>);
+  const shortenWkt = (wkt, maxLen = 100) => {
+    if (!wkt) return "-";
+    return wkt.length > maxLen ? `${wkt.slice(0, maxLen)}...` : wkt;
+  };
+
+  const getWktType = (wkt) => {
+    if (!wkt) return "-";
+    const type = wkt.trim().split("(")[0].toUpperCase();
+    return type;
+  };
+
+  const groupedFeatures = {
+    POINT: [],
+    LINESTRING: [],
+    POLYGON: []
+  };
+
+  vectorSource.getFeatures().forEach(f => {
+    const pd = f.get("pointData");
+    if (pd?.wkt) {
+      const type = getWktType(pd.wkt);
+      if (groupedFeatures[type]) {
+        groupedFeatures[type].push(pd);
       }
-      parts.push(<mark key={`mark-${i}`}>{text.slice(start, end + 1)}</mark>);
-      lastIndex = end + 1;
-    });
-  
-    if (lastIndex < text.length) {
-      parts.push(<span key="last">{text.slice(lastIndex)}</span>);
     }
-  
-    return parts;
-  };
-  
+  });
+
+  const totalPages = Math.ceil(totalUsers / perPage);
 
   return (
     <>
@@ -141,42 +154,33 @@ const UserPanel = () => {
         <h2 className="admin-title">Registered Users</h2>
       </div>
 
-      <input
-        className="admin-search-input"
-        type="text"
-        placeholder="Search by username or email..."
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-          setCurrentPage(1);
-        }}
-      />
-
       <table className="admin-table">
         <thead>
           <tr>
-            <th className="clickable" onClick={() => handleSort("username")}>Username <span className="arrow">{sortField === "username" ? (sortDir === "asc" ? "▲" : "▼") : ""}</span></th>
-            <th className="clickable" onClick={() => handleSort("email")}>Email <span className="arrow">{sortField === "email" ? (sortDir === "asc" ? "▲" : "▼") : ""}</span></th>
-            <th className="clickable" onClick={() => handleSort("role")}>Role <span className="arrow">{sortField === "role" ? (sortDir === "asc" ? "▲" : "▼") : ""}</span></th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {paginated.length > 0 ? (
-            paginated.map(({ item, matches }) => (
-              <tr key={item.id}>
-                <td className="highlight-cell">{highlightMatch(item.username, matches, "username")}</td>
-                <td className="highlight-cell">{highlightMatch(item.email, matches, "email")}</td>
-                <td>{item.role}</td>
+          {users.length > 0 ? (
+            users.map((user) => (
+              <tr key={user.id}>
+                <td>{user.username}</td>
+                <td>{user.email}</td>
+                <td>{user.role}</td>
                 <td>
-                  <button className="view-btn" onClick={() => fetchUserDetails(item.id)}>View Details</button>
-                  <button className="delete-btn" onClick={() => handleDeleteUser(item.id)}>Delete</button>
+                  <button className="view-btn" onClick={() => fetchUserDetails(user.id)}>View Details</button>
+                  <button className="delete-btn" onClick={() => handleDeleteUser(user.id)}>Delete</button>
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="4" className="empty-cell" style={{ textAlign: "center", padding: "20px", color: "#b8503b" }}>No results found.</td>
+              <td colSpan="4" className="empty-cell" style={{ textAlign: "center", padding: "20px", color: "#b8503b" }}>
+                No results found.
+              </td>
             </tr>
           )}
         </tbody>
@@ -186,43 +190,43 @@ const UserPanel = () => {
         <div className="overlay-modal">
           <div className="details-modal-centered">
             <div className="details-header">
-              <h3>User Object Details</h3>
+              <h3>User Object Details ({selectedUsername})</h3>
               <button onClick={() => setIsDetailsPanelOpen(false)} className="close-btn">X</button>
             </div>
 
-            <table className="details-table">
-              <thead>
-                <tr>
-                  <th>Object</th>
-                  <th>Count</th>
-                  <th>Created At</th>
-                </tr>
-              </thead>
-              <tbody>
-                {["point", "linestring", "polygon"].map((type) => {
-                  const details = selectedDetails?.[type];
-                  const created = details?.createdAtList || [];
+            <div className="type-selector-buttons">
+              {["POINT", "LINESTRING", "POLYGON"].map(type => (
+                <button
+                  key={type}
+                  className={selectedGeometryType === type ? "active-type-btn" : "type-btn"}
+                  onClick={() => setSelectedGeometryType(type)}
+                >
+                  {type.charAt(0) + type.slice(1).toLowerCase()}
+                </button>
+              ))}
+            </div>
 
-                  const maxLength = Math.max(created.length, 1);
-
-                  return (
-                    <React.Fragment key={type}>
-                      {Array.from({ length: maxLength }).map((_, index) => (
-                        <tr key={`${type}-${index}`}>
-                          {index === 0 ? (
-                            <>
-                              <td rowSpan={maxLength} style={{ fontWeight: "bold", verticalAlign: "top" }}>{type}</td>
-                              <td rowSpan={maxLength}>{details?.count ?? 0}</td>
-                            </>
-                          ) : null}
-                          <td>{created[index] ? formatDate(created[index]) : "-"}</td>
-                        </tr>
-                      ))}
-                    </React.Fragment>
-                  );
-                })}
-              </tbody>
-            </table>
+            <div className="object-detail-list">
+              {vectorSource.getFeatures().filter(f => {
+                const pd = f.get("pointData");
+                return pd && getWktType(pd.wkt) === selectedGeometryType;
+              }).map((f, i) => {
+                const pd = f.get("pointData");
+                return (
+                  <div key={i} className="object-detail-card" onClick={() => handleObjectFocus(selectedUserId, pd.type, pd.createdAt)}>
+                    <div><strong>Created At:</strong> {formatDate(pd.createdAt)}</div>
+                    <div><strong>Name:</strong> {pd.name || "-"}</div>
+                    <div><strong>Created By:</strong> {pd.createdByUsername || "-"}</div>
+                    <div>
+                      <strong>WKT:</strong>{" "}
+                      <code style={{ fontSize: "0.75rem", wordBreak: "break-word" }}>
+                        {shortenWkt(pd.wkt)}
+                      </code>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

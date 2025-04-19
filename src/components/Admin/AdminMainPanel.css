@@ -200,7 +200,7 @@
     padding: 12px;
     color: #4d1d1d;
     background-color: #fff5f1;
-    vertical-align: middle;
+    vertical-align: top;
     line-height: 1.4;
   }
 
@@ -484,7 +484,8 @@
     padding: 20px 24px;
     max-width: 900px;
     width: 90%;
-    max-height: 90vh;
+    max-height: 80vh;
+    height: 800px;
     overflow-y: auto;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.3s ease;
@@ -584,5 +585,134 @@
   
   .details-table tbody tr:hover {
     background-color: #fff2ee;
+  }
+  
+  .accordion-section {
+    border-radius: 10px;
+    background-color: #fff8f6;
+    border: 1px solid #e8c0b6;
+    margin-bottom: 14px;
+    transition: all 0.3s ease;
+  }
+  
+  .accordion-header {
+    padding: 12px 16px;
+    font-weight: 600;
+    color: #5c1e1e;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background-color: #fde7e3;
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .accordion-section.open .accordion-header {
+    background-color: #f8d0ca;
+  }
+  
+  .accordion-body {
+    padding: 16px 20px;
+    border-top: 1px solid #e0b6ae;
+  }
+  
+  .stat-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+  }
+  
+  .stat-label {
+    font-weight: bold;
+    color: #712f2f;
+  }
+  
+  .stat-value {
+    color: #333;
+  }
+  
+  .badge-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  
+  .badge {
+    background-color: #ffe6e1;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: #4d1d1d;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 5px;
+  }
+  
+  .badge:hover {
+    background-color: #ffdad2;
+    transform: scale(1.02);
+  }  
+  
+  .badge:active {
+    background-color: #f8c4b9;
+  }
+  
+  .object-type-header {
+    font-size: 1.2rem;
+    margin-top: 20px;
+    color: #7a2f1d;
+    border-bottom: 1px solid #e0b3a1;
+    padding-bottom: 5px;
+  }
+  
+  .object-detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .object-detail-card {
+    background: #ffe6e1;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    border-left: 5px solid #b8503b;
+  }  
+  
+  .object-detail-card:hover {
+    background-color: #ffdad2;
+  }
+
+  .details-body {
+    max-height: 90vh;
+    overflow-y: auto;
+    padding-right: 6px;
+  }
+  .type-selector-buttons {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+    justify-content: center;
+  }
+  
+  .type-btn,
+  .active-type-btn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 6px;
+    background-color: #eee;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .active-type-btn {
+    background-color: #c85a54;
+    color: white;
+    font-weight: bold;
   }
   

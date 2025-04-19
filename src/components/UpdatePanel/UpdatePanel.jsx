@@ -11,6 +11,8 @@ import { onEdit } from "../../redux/state/editState";
 import { enableTranslateMode } from "../../utils/DragPoint";
 import zoomToFeature from "../../utils/ZoomPoint";
 import { getMap } from "../../utils/MapView";
+import WKT from "ol/format/WKT";
+import Feature from 'ol/Feature';
 
 const UpdatePanel = () => {
     const dispatch = useDispatch();
@@ -19,7 +21,7 @@ const UpdatePanel = () => {
     const isOpen = useSelector((state) => state.panel.isOpen);
     const user = useSelector((state) => state.auth.user);
     const isAdmin = user?.role === "admin";
-    const [isEditing, setIsEditing] = useState(false); 
+    const [isEditing, setIsEditing] = useState(false);
     const [editedName, setEditedName] = useState("");
     const [editedWkt, setEditedWkt] = useState("");
     const [confirmResolve, setConfirmResolve] = useState(null);
@@ -28,42 +30,53 @@ const UpdatePanel = () => {
     useEffect(() => {
         if (selectedFeature) {
             setEditedName(selectedFeature.name || "");
-            if(isEdit){
+            if (isEdit) {
                 setIsEditing(isEdit);
                 dispatch(offEditPanel());
             }
         }
-    }, [selectedFeature]); 
+    }, [selectedFeature]);
     const triggerEdit = () => {
         setIsEditing(true);
         const map = getMap();
         zoomToFeature(map, selectedFeature);
     };
+
     const triggerSave = async () => {
         const userConfirmed = await showConfirm();
-        if (userConfirmed) {
+        if (!userConfirmed) {
+            triggerCancel();
+            return;
+        }
+
+        try {
+            const id = selectedFeature.id;
+            const wktFormat = new WKT();
+            const geometry = wktFormat.readGeometry(selectedFeature.wkt);
+            const wkt = wktFormat.writeGeometry(geometry);
+
             const data = {
                 name: editedName,
-                wkt: selectedFeature.wkt
+                wkt: wkt,
             };
-    
-            dispatch(updateFeature({ 
-                id: selectedFeature.id,
-                data 
-            }));
-    
+
+            console.log("GÖNDERİLEN DATA:", JSON.stringify(data));
+
+            await dispatch(updateFeature({ id, data }));
+
             setIsEditing(false);
             dispatch(offEditPanel());
-            toast.success("Updation completed successfully!");
-            setEditedName(data.name);
-        } else {
-            triggerCancel();
+            toast.success("Update completed successfully!");
+        } catch (err) {
+            console.error("Update error:", err);
+            toast.error("An error occurred during update.");
         }
-    };    
-    
+    };
+
+
     const triggerCancel = () => {
         setEditedName(selectedFeature.name);
-        setIsEditing(false); 
+        setIsEditing(false);
         toast.warning("Updation process cancelled!");
         dispatch(clearFeature());
         dispatch(closePanel());
@@ -85,7 +98,7 @@ const UpdatePanel = () => {
         setEditedName('')
     };
     const handleDragDrop = () => {
-        enableTranslateMode(selectedFeature,dispatch, showConfirm);
+        enableTranslateMode(selectedFeature, dispatch, showConfirm);
         dispatch(closePanel());
     }
     const handleModify = () => {
@@ -104,92 +117,94 @@ const UpdatePanel = () => {
     };
     const handleConfirmResult = (result) => {
         if (confirmResolve) {
-            confirmResolve(result); 
-            setConfirmResolve(null); 
+            confirmResolve(result);
+            setConfirmResolve(null);
         }
         setIsConfirmPanelOpen(false);
     };
-    const onEditFunction = () =>{
+    const onEditFunction = () => {
         dispatch(onEdit());
     }
     console.log("Feature:", selectedFeature);
     console.log("get(username):", selectedFeature?.get?.("username"));
     console.log("get(pointData):", selectedFeature?.get?.("pointData"));
     console.log("createdByUsername:", selectedFeature?.get?.("pointData")?.createdByUsername);
-    
+
     const username =
-    typeof selectedFeature?.get === "function"
-      ? selectedFeature.get("createdByUsername") || selectedFeature.get("username") || selectedFeature.get("pointData")?.createdByUsername
-      : selectedFeature?.createdByUsername || selectedFeature?.username || selectedFeature?.pointData?.createdByUsername;
-  
+        typeof selectedFeature?.get === "function"
+            ? selectedFeature.get("createdByUsername") || selectedFeature.get("username") || selectedFeature.get("pointData")?.createdByUsername
+            : selectedFeature?.createdByUsername || selectedFeature?.username || selectedFeature?.pointData?.createdByUsername;
+
 
     return (
         <>
-        <Modal isOpen={isOpen} onClose={handleClose} title="Modify Feature">
-        {selectedFeature && (
-        <>
-        {isAdmin && selectedFeature?.createdByUsername && (
-        <div className="form-group">
-            <label className="edit-username">Created By: {selectedFeature.createdByUsername}</label>
-        </div>
-        )}
+            <Modal isOpen={isOpen} onClose={handleClose} title="Modify Feature">
+                {selectedFeature && (
+                    <>
+                        {isAdmin && selectedFeature?.createdByUsername && (
+                            <div className="form-group">
+                                <label className="edit-username">Created By: {selectedFeature.createdByUsername}</label>
+                            </div>
+                        )}
 
-        {isAdmin && selectedFeature?.createdAt && (
-        <div className="form-group">
-            <label className="edit-username">
-            Created At:{" "}
-            {new Date(selectedFeature.createdAt).toLocaleString("en-GB", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit"
-            })}
-            </label>
-        </div>
-        )}
+                        {isAdmin && selectedFeature?.createdAt && (
+                            <div className="form-group">
+                                <label className="edit-username">
+                                    Created At:{" "}
+                                    {new Date(selectedFeature.createdAt).toLocaleString("en-GB", {
+                                        day: "2-digit",
+                                        month: "short",
+                                        year: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit"
+                                    })}
+                                </label>
+                            </div>
+                        )}
 
-            <div className="form-group">
-            <label htmlFor="name">Name:</label>
-            <input
-                id="name"
-                type="text"
-                value={editedName}
-                onChange={(e) => setEditedName(e.target.value)}
-                className="edit-input"
-            />
-            </div>
-            <div className="form-group">
-            <label htmlFor="wkt">WKT:</label>
-            <input
-                id="wkt"
-                type="text"
-                value={selectedFeature?.wkt || ""}
-            />
-            </div>
-        </>
-        )}
+                        <div className="form-group">
+                            <label htmlFor="name">Name:</label>
+                            <input
+                                id="name"
+                                type="text"
+                                value={editedName}
+                                onChange={(e) => setEditedName(e.target.value)}
+                                className="edit-input"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="wkt">WKT:</label>
+                            <input
+                                id="wkt"
+                                type="text"
+                                value={selectedFeature?.wkt || ""}
+                                readOnly
+                                className="edit-input"
+                            />
+                        </div>
+                    </>
+                )}
 
-        <div className="edit-butonlari">
-            {isEditing ? (
-            <>
-                <button onClick={triggerSave} className="save-btn">Save</button>
-                <button onClick={triggerCancel} className="cancel-btn">Cancel</button>
-            </>
-            ) : (
-            <>
-                <button onClick={triggerEdit} className="save-btn">Update</button>
-                <button onClick={handleModify} className="modify-btn">Start Manual Update</button>
-                <button onClick={triggerDelete} className="delete-btn">Delete</button>
-                <button onClick={handleClose} className="close-btn">Close</button>
-            </>
-            )}
-        </div>
-        </Modal>
-        <ConfirmPanel
+                <div className="edit-butonlari">
+                    {isEditing ? (
+                        <>
+                            <button onClick={triggerSave} className="save-btn">Save</button>
+                            <button onClick={triggerCancel} className="cancel-btn">Cancel</button>
+                        </>
+                    ) : (
+                        <>
+                            <button onClick={triggerEdit} className="save-btn">Update</button>
+                            <button onClick={handleModify} className="modify-btn">Start Manual Update</button>
+                            <button onClick={triggerDelete} className="delete-btn">Delete</button>
+                            <button onClick={handleClose} className="close-btn">Close</button>
+                        </>
+                    )}
+                </div>
+            </Modal>
+            <ConfirmPanel
                 isOpen={isConfirmPanelOpen}
                 onClose={() => setIsConfirmPanelOpen(false)}
-                onConfirm={(value) => handleConfirmResult(value)}                
+                onConfirm={(value) => handleConfirmResult(value)}
             />
         </>
     );

@@ -28,7 +28,7 @@ const AdminPanel = ({ isOpen, onClose }) => {
   const renderContent = () => {
     switch (activeTab) {
       case "users":
-        return <UserPanel />;
+        return <UserPanel onCloseAdminPanel={onClose} />;      
       case "analytics":
         return <AnalyticsPanel />;
       case "settings":
