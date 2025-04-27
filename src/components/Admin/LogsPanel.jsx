@@ -19,7 +19,7 @@ const LogsPanel = () => {
 
     const filteredLogs = logs.filter(log => {
         const matchesAction = filter
-            ? log.actionType.toLowerCase() === filter
+            ? log.actionType.toLowerCase() === filter.toLowerCase()
             : true;
 
         const matchesSearch = searchQuery

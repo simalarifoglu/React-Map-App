@@ -7,6 +7,7 @@ import enableDrawMode from '../../utils/DrawPoint';
 import AdminPanel from "../Admin/AdminPanel";
 import { logout } from '../../redux/state/authState';
 import './Header.css';
+import AccountSettingsPanel from "../AccountSettingsPanel/AccountSettingsPanel";
 
 function Header() {
   const dispatch = useDispatch();
@@ -17,11 +18,12 @@ function Header() {
   const { user, isInitialized } = useSelector(state => state.auth);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
+  const [isAccountPanelOpen, setIsAccountPanelOpen] = useState(false);
 
   if (!isInitialized) {
     return null;
-  }  
-  
+  }
+
   const handleLogout = async () => {
     try {
       await fetch("https://localhost:7176/api/Auth/logout", {
@@ -44,26 +46,26 @@ function Header() {
           <div className="header-top">
             <h1>Turkey Map</h1>
           </div>
-  
+
           <div className="button-group">
             <button onClick={() => enableDrawMode('Point', dispatch, setIsAddPointPanelOpen)}>Add Point</button>
             <button onClick={() => enableDrawMode('LineString', dispatch, setIsAddPointPanelOpen)}>Add Linestring</button>
             <button onClick={() => enableDrawMode('Polygon', dispatch, setIsAddPointPanelOpen)}>Add Polygon</button>
             <button onClick={() => setIsQueryPanelOpen(true)}>Query Panel</button>
           </div>
-  
+
           <AddPointPanel
-            isOpen={isAddPointPanelOpen} 
+            isOpen={isAddPointPanelOpen}
             onClose={() => setIsAddPointPanelOpen(false)}
             title={<span className="add-feature-title">Add Object</span>}
             position="right"
           />
-  
-          <QueryPanel 
-            isOpen={isQueryPanelOpen} 
-            onClose={() => setIsQueryPanelOpen(false)} 
+
+          <QueryPanel
+            isOpen={isQueryPanelOpen}
+            onClose={() => setIsQueryPanelOpen(false)}
           />
-  
+
           <div className="header-right">
             {user ? (
               <div
@@ -76,6 +78,9 @@ function Header() {
                 </span>
                 {isDropdownOpen && (
                   <div className="dropdown-content">
+                    {user?.role === "user" && (
+                      <button onClick={() => setIsAccountPanelOpen(true)}>Account Settings</button>
+                    )}
                     {user?.role === "admin" && (
                       <button onClick={() => setIsAdminPanelOpen(true)}>Admin Panel</button>
                     )}
@@ -88,13 +93,19 @@ function Header() {
             )}
           </div>
         </header>
-  
+
         <AdminPanel
           isOpen={isAdminPanelOpen}
           onClose={() => setIsAdminPanelOpen(false)}
         />
+        {user?.role === "user" && (
+          <AccountSettingsPanel
+            isOpen={isAccountPanelOpen}
+            onClose={() => setIsAccountPanelOpen(false)}
+          />
+        )}
       </>
     )
   );
-}  
+}
 export default Header;

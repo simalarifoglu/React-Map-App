@@ -146,7 +146,6 @@
     color: #712f2f;
   }
   
-  /* Search */
   .admin-search-input {
     margin-bottom: 20px;
   }
@@ -168,7 +167,6 @@
     box-shadow: 0 0 0 3px rgba(184, 80, 59, 0.2);
   }
   
-  /* Table */
   .admin-table {
     width: 100%;
     border-collapse: collapse;
@@ -228,7 +226,6 @@
     pointer-events: none;
   }
   
-  /* Pagination */
   .admin-pagination {
     margin-top: 20px;
     display: flex;
@@ -801,7 +798,6 @@
     height: 800px;
   }
   
-  /* Başlık */
   .logs-panel h2 {
     margin-bottom: 24px;
     font-size: 1.6rem;
@@ -809,7 +805,6 @@
     font-weight: 600;
   }
   
-  /* Search ve Dropdown */
   .logs-controls {
     display: flex;
     gap: 12px;
@@ -852,7 +847,6 @@
     background-color: #fcece6;
   }
   
-  /* Tarih başlığı */
   .logs-panel h4 {
     margin-top: 30px;
     color: #5a2a17;
@@ -860,7 +854,6 @@
     font-size: 1rem;
   }
   
-  /* Tablo */
   .logs-table {
     width: 100%;
     border-collapse: collapse;
@@ -927,7 +920,6 @@
     background-color: #fcece6;
   }
   
-  /* Arama kutusu içinde ikon görünümü için (opsiyonel) */
 .logs-controls .search-wrapper {
   position: relative;
   width: 100%;
@@ -940,7 +932,6 @@
 }
 
 .logs-controls .search-wrapper::before {
-  content: "🔍";
   position: absolute;
   left: 10px;
   top: 50%;
