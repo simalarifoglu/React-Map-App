@@ -7,6 +7,7 @@ import "../Admin/AdminMainPanel.css";
 import ConfirmationModal from "../Admin/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../redux/state/authState";
+import UserLogsPanel from "./UserLogsPanel";
 
 const AccountSettingsPanel = ({ isOpen, onClose }) => {
     const { user } = useSelector((state) => state.auth);
@@ -19,7 +20,7 @@ const AccountSettingsPanel = ({ isOpen, onClose }) => {
     const [newPassword, setNewPassword] = useState("");
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
-    const [showConfirmModal, setShowConfirmModal] = useState(false); 
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
     const navigate = useNavigate();
 
 
@@ -63,19 +64,19 @@ const AccountSettingsPanel = ({ isOpen, onClose }) => {
 
     const handleLogout = async () => {
         try {
-          await fetch("https://localhost:7176/api/Auth/logout", {
-            method: "POST",
-            credentials: "include",
-          });
-    
-          dispatch(logout());
-          localStorage.removeItem("user");
-          navigate("/login", { replace: true });
+            await fetch("https://localhost:7176/api/Auth/logout", {
+                method: "POST",
+                credentials: "include",
+            });
+
+            dispatch(logout());
+            localStorage.removeItem("user");
+            navigate("/login", { replace: true });
         } catch (error) {
-          console.error("Logout failed:", error);
+            console.error("Logout failed:", error);
         }
-      };
-      
+    };
+
 
     return (
         <div className={`admin-panel-overlay ${isOpen ? "panel-open" : ""}`}>
@@ -89,6 +90,13 @@ const AccountSettingsPanel = ({ isOpen, onClose }) => {
                         onClick={() => setActiveTab("account")}
                     >
                         Account Settings
+                    </button>
+
+                    <button
+                        className={activeTab === "logs" ? "active" : ""}
+                        onClick={() => setActiveTab("logs")}
+                    >
+                        My Activity
                     </button>
 
                     <button className="logout-btn" onClick={handleLogout}>Logout</button>
@@ -157,8 +165,10 @@ const AccountSettingsPanel = ({ isOpen, onClose }) => {
                             </div>
                         </form>
                     )}
+                    {activeTab === "logs" && (
+                        <UserLogsPanel onClose={onClose} />
+                    )}
                 </div>
-
             </div>
 
             {showConfirmModal && (

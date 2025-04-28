@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./AdminMainPanel.css";
+import { getMap, vectorSource } from "../../utils/MapView";
+import zoomToFeature from "../../utils/ZoomPoint";
 
-const LogsPanel = () => {
+const LogsPanel = ({ onClose }) => {
     const [logs, setLogs] = useState([]);
     const [filter, setFilter] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
@@ -38,6 +40,29 @@ const LogsPanel = () => {
     }, {});
 
     const sortedDates = Object.keys(groupedLogs).sort((a, b) => new Date(b) - new Date(a));
+
+    const handleGoToObject = (log) => {
+        const map = getMap();
+        if (!map) {
+            console.error("Map is not initialized");
+            return;
+        }
+
+        const targetFeature = vectorSource.getFeatures().find((feature) => {
+            const pointData = feature.get("pointData");
+            return pointData && pointData.name === log.objectName;
+        });
+
+        if (targetFeature) {
+            zoomToFeature(map, targetFeature.get("pointData"));
+            if (onClose) {
+                onClose();
+            }
+        } else {
+            console.warn("Feature not found for:", log.objectName);
+            alert(`Object "${log.objectName}" not found on map.`);
+        }
+    };
 
     return (
         <div className="logs-panel">
@@ -78,7 +103,14 @@ const LogsPanel = () => {
                                     <td>{log.username}</td>
                                     <td>{log.actionType}</td>
                                     <td>{log.objectType}</td>
-                                    <td>{log.objectName}</td>
+                                    <td>
+                                        <button
+                                            className="link-button"
+                                            onClick={() => handleGoToObject(log)}
+                                        >
+                                            {log.objectName}
+                                        </button>
+                                    </td>
                                     <td>{new Date(log.actionTime).toLocaleTimeString()}</td>
                                 </tr>
                             ))}

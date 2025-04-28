@@ -939,3 +939,16 @@
   color: #b65b3c;
   font-size: 1rem;
 }
+
+.link-button {
+  background: none;
+  border: none;
+  color: #331616;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+}
+
+.link-button:hover {
+  color: #6D3A3A;
+}

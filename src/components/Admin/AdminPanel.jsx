@@ -33,7 +33,7 @@ const AdminPanel = ({ isOpen, onClose }) => {
       case "settings": return <AdminSettings />;
       case "analytics": return <AnalyticsPanel />;
       case "users": return <UserPanel onCloseAdminPanel={onClose} />;
-      case "logs": return <LogsPanel />;
+      case "logs": return <LogsPanel onClose={onClose} />;
       default: return null;
     }
   };
@@ -45,8 +45,8 @@ const AdminPanel = ({ isOpen, onClose }) => {
           <h3>Admin Panel</h3>
           <button className={activeTab === "analytics" ? "active" : ""} onClick={() => setActiveTab("analytics")}>Analytics</button>
           <button className={activeTab === "users" ? "active" : ""} onClick={() => setActiveTab("users")}>Users</button>
+          <button className={activeTab === "logs" ? "active" : ""} onClick={() => setActiveTab("logs")}>Logs</button>
           <button className={activeTab === "settings" ? "active" : ""} onClick={() => setActiveTab("settings")}>Settings</button>
-          <button className={activeTab === "logs" ? "active" : ""} onClick={() => setActiveTab("logs")}>Logs</button> {/* ✅ LOGS butonu */}
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
         <div className="admin-content">
