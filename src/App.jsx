@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getFilteredObjects } from "./redux/state/mapObjectsState";
-import { loginSuccess, logout } from "./redux/state/authState"; 
+import { loginSuccess, logout } from "./redux/state/authState";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -15,6 +15,9 @@ import { StopEditButton } from "./components/StopUpdate/StopUpdate";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
+
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function MapPage() {
   const [isConfirmPanelOpen, setIsConfirmPanelOpen] = useState(false);
@@ -53,7 +56,7 @@ function App() {
     dispatch(clearObjects());
     localStorage.removeItem("user");
   };
-  
+
 
   useEffect(() => {
     fetch("https://localhost:7176/api/Auth/me", {
@@ -71,7 +74,7 @@ function App() {
           id: data.id,
           username: data.username
         };
-        
+
         dispatch(loginSuccess({ token: null, user: userData }));
         localStorage.setItem("user", JSON.stringify(userData));
         dispatch(getFilteredObjects());
@@ -80,8 +83,8 @@ function App() {
         logoutAndClearData();
       });
   }, [dispatch]);
-  
-  
+
+
 
   return (
     <Router>
@@ -98,6 +101,8 @@ function App() {
           }
         />
 
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>

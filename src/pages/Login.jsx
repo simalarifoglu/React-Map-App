@@ -18,21 +18,21 @@ export default function Login() {
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
-  };  
+  };
   const [emailError, setEmailError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+
     if (!isValidEmail(email)) {
       setEmailError("Geçerli bir e-posta adresi girin.");
       return;
     }
-  
+
     setEmailError("");
     setErrorMessage("");
     setSuccessMessage("");
-  
+
     try {
       const response = await fetch("https://localhost:7176/api/Auth/login", {
         method: "POST",
@@ -40,35 +40,35 @@ export default function Login() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, rememberMe }),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         setErrorMessage(data.message || "Login failed");
         return;
       }
-  
+
       dispatch(clearObjects());
       vectorSource.clear();
-  
+
       const userData = {
         email: data.email,
         role: data.role,
         id: data.id,
         username: data.username,
       };
-  
+
       await dispatch(loginSuccessAndReset(userData));
       localStorage.setItem("user", JSON.stringify(userData));
       navigate("/map");
-  
+
     } catch (err) {
       console.error("Login error:", err);
       setErrorMessage("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
-  
-  
+
+
 
   return (
     <main className="auth-container">
@@ -87,7 +87,7 @@ export default function Login() {
         </div>
         {emailError && <p className="auth-error-message">{emailError}</p>}
 
-        <div className="auth-input-group">
+        <div className="auth-input-group" style={{ position: "relative" }}>
           <input
             type="password"
             placeholder="Password"
@@ -96,8 +96,21 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <a
+            href="/forgot-password"
+            style={{
+              position: "absolute",
+              bottom: "-20px",
+              right: "0",
+              fontSize: "0.85rem",
+              color: "#6b1b03",
+              textDecoration: "underline",
+            }}
+          >
+            Forgot Password?
+          </a>
         </div>
-
+        
         <div className="auth-remember-me">
           <label className="remember-label">
             <input
@@ -112,7 +125,6 @@ export default function Login() {
         <button type="submit" className="auth-button">
           LOGIN
         </button>
-
         <p className="auth-bottom-text">
           Don't have an account? <a href="/register">Sign Up</a>
         </p>
