@@ -14,6 +14,7 @@ import { getMap } from "../../utils/MapView";
 import WKT from "ol/format/WKT";
 import Feature from 'ol/Feature';
 import { getFormattedLength, getFormattedArea } from '../../utils/CalculateLength';
+import { getLatLonFromWKT } from "../../utils/getLatLonFromWKT";
 
 const UpdatePanel = () => {
     const dispatch = useDispatch();
@@ -27,16 +28,42 @@ const UpdatePanel = () => {
     const [editedWkt, setEditedWkt] = useState("");
     const [confirmResolve, setConfirmResolve] = useState(null);
     const [isConfirmPanelOpen, setIsConfirmPanelOpen] = useState(false)
+    const [weatherInfo, setWeatherInfo] = useState(null);
 
     useEffect(() => {
         if (selectedFeature) {
             setEditedName(selectedFeature.name || "");
+
             if (isEdit) {
                 setIsEditing(isEdit);
                 dispatch(offEditPanel());
             }
+
+            const coords = getLatLonFromWKT(selectedFeature?.wkt);
+            if (!coords) {
+                console.warn("Koordinat çıkarılamadı:", selectedFeature?.wkt);
+                return;
+            }
+
+            const [lon, lat] = coords;
+            console.log("Koordinatlar:", lat, lon);
+            fetch(`https://localhost:7176/api/weather?lat=${lat}&lon=${lon}`)
+                .then(async (res) => {
+                    if (!res.ok) {
+                        const errText = await res.text();
+                        throw new Error("Hata cevabı: " + errText);
+                    }
+
+                    const data = await res.json();
+                    console.log("Gelen hava durumu verisi:", JSON.stringify(data, null, 2));
+                    setWeatherInfo(data);
+                })
+                .catch((err) => {
+                    console.error("Hava durumu alınamadı:", err.message);
+                });
         }
     }, [selectedFeature]);
+
     const triggerEdit = () => {
         setIsEditing(true);
         const map = getMap();
@@ -179,6 +206,26 @@ const UpdatePanel = () => {
                                 <label className="edit-username">
                                     Area: {getFormattedArea(geometryWkt)}
                                 </label>
+                            </div>
+                        )}
+
+                        {weatherInfo ? (
+                            <div className="form-group">
+                                <div className="weather-badge">
+                                    <img
+                                        src={`https://openweathermap.org/img/wn/${weatherInfo.icon}@2x.png`}
+                                        alt="icon"
+                                        className="weather-icon"
+                                    />
+                                    <div>
+                                        <div className="weather-temp">{weatherInfo.temp ?? "-"}°C</div>
+                                        <div className="weather-desc">{weatherInfo.description ?? "-"}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="form-group">
+                                <div className="weather-loading">Weather: Yükleniyor...</div>
                             </div>
                         )}
 

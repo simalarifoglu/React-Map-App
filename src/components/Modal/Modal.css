@@ -1,71 +1,72 @@
 .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 500px;
-    background-color: #ffece6;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  }
-  
-  .carpi-buton{
-    text-align: right;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
-  .edit-butonlari{
-    text-align: right;
-    margin-top: 15px;
-  }
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 500px;
+  background-color: #ffece6;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
 
-  .elements{
-    white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis;
-    max-width: 300px; 
-  }
+.carpi-buton {
+  text-align: right;
+}
 
-  .table-container td{
-    padding: 18px 12px;
-    white-space: nowrap;
-    overflow: hidden; 
-    text-overflow: ellipsis;
-    max-width: 300px; 
-    background-color: #ffece6;
-  }
+.edit-butonlari {
+  text-align: right;
+  margin-top: 15px;
+}
 
-  .editTable tr:nth-child(even) {
-    background-color: hsl(208, 100%, 95%);
-  }
-  
-  .edit-butonlari button {
-    margin-left: 10px;
-    font-size: 15px;
-   
-  }
-  
-  .table-container input {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #d18989;
-    border-radius: 6px;
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.2s ease;
-    background-color: #fff;
-    width: 100%;
-    box-sizing: border-box;
+.elements {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+}
+
+.table-container td {
+  padding: 18px 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+  background-color: #ffece6;
+}
+
+.editTable tr:nth-child(even) {
+  background-color: hsl(208, 100%, 95%);
+}
+
+.edit-butonlari button {
+  margin-left: 10px;
+  font-size: 15px;
+
+}
+
+.table-container input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #d18989;
+  border-radius: 6px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  background-color: #fff;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .edit-input:focus {
@@ -74,23 +75,24 @@
 }
 
 .table-container input:disabled {
-    background-color: #e9ecef;
-    cursor: not-allowed;
-    opacity: 0.6;
+  background-color: #e9ecef;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
-#edit-panel-header{
+#edit-panel-header {
   padding-top: 0px;
   padding-right: 0px;
   padding-left: 15px;
   border-bottom: none !important;
 }
 
-.confirm-ask{
+.confirm-ask {
   padding: 10px;
 
 }
-.confirm-container button{
+
+.confirm-container button {
   font-size: 15px;
   text-align: right;
   padding: 5px 15px;
@@ -98,6 +100,36 @@
   margin-top: 20px;
   display: inline-block;
 }
+
 .confirm-btn-container {
   text-align: right;
+}
+
+.weather-badge {
+  display: flex;
+  align-items: center;
+  margin: auto;
+  background-color: #e7b59f;
+  border: 1px solid #8b503d;
+  padding: 10px 14px;
+  border-radius: 12px;
+  gap: 12px;
+  max-width: 240px;
+}
+
+.weather-temp {
+  font-size: 16px;
+  font-weight: 600;
+  color: #6b1b03;
+}
+
+.weather-desc {
+  font-size: 14px;
+  color: #6b1b03;
+  opacity: 0.8;
+}
+
+.weather-icon {
+  width: 48px;
+  height: 48px;
 }
