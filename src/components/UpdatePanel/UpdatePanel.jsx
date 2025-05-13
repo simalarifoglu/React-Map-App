@@ -13,6 +13,7 @@ import zoomToFeature from "../../utils/ZoomPoint";
 import { getMap } from "../../utils/MapView";
 import WKT from "ol/format/WKT";
 import Feature from 'ol/Feature';
+import { getFormattedLength } from '../../utils/CalculateLength';
 
 const UpdatePanel = () => {
     const dispatch = useDispatch();
@@ -125,6 +126,9 @@ const UpdatePanel = () => {
     const onEditFunction = () => {
         dispatch(onEdit());
     }
+
+    const wktFormat = new WKT();
+    const geometryWkt = selectedFeature?.wkt || "";
     console.log("Feature:", selectedFeature);
     console.log("get(username):", selectedFeature?.get?.("username"));
     console.log("get(pointData):", selectedFeature?.get?.("pointData"));
@@ -162,6 +166,14 @@ const UpdatePanel = () => {
                             </div>
                         )}
 
+                        {geometryWkt.startsWith("LINESTRING") && (
+                            <div className="form-group">
+                                <label className="edit-username">
+                                    Length: {getFormattedLength(geometryWkt)}
+                                </label>
+                            </div>
+                        )}
+
                         <div className="form-group">
                             <label htmlFor="name">Name:</label>
                             <input
@@ -177,7 +189,7 @@ const UpdatePanel = () => {
                             <input
                                 id="wkt"
                                 type="text"
-                                value={selectedFeature?.wkt || ""}
+                                value={geometryWkt}
                                 readOnly
                                 className="edit-input"
                             />
