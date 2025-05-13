@@ -13,7 +13,7 @@ import zoomToFeature from "../../utils/ZoomPoint";
 import { getMap } from "../../utils/MapView";
 import WKT from "ol/format/WKT";
 import Feature from 'ol/Feature';
-import { getFormattedLength } from '../../utils/CalculateLength';
+import { getFormattedLength, getFormattedArea } from '../../utils/CalculateLength';
 
 const UpdatePanel = () => {
     const dispatch = useDispatch();
@@ -170,6 +170,14 @@ const UpdatePanel = () => {
                             <div className="form-group">
                                 <label className="edit-username">
                                     Length: {getFormattedLength(geometryWkt)}
+                                </label>
+                            </div>
+                        )}
+
+                        {geometryWkt.startsWith("POLYGON") && (
+                            <div className="form-group">
+                                <label className="edit-username">
+                                    Area: {getFormattedArea(geometryWkt)}
                                 </label>
                             </div>
                         )}

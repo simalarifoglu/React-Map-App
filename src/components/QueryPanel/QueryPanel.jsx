@@ -9,7 +9,7 @@ import { openPanel } from '../../redux/state/panelState';
 import { onEditPanel } from '../../redux/state/panelState';
 import ConfirmPanel from '../ConfirmPanel/ConfirmPanel';
 import './QueryPanel.css';
-import { getFormattedLength } from '../../utils/CalculateLength';
+import { getFormattedLength, getFormattedArea } from '../../utils/CalculateLength';
 
 const QueryPanel = ({ isOpen, onClose }) => {
     const dispatch = useDispatch();
@@ -21,7 +21,7 @@ const QueryPanel = ({ isOpen, onClose }) => {
     const panelRef = useRef(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 7;
+    const itemsPerPage = 10;
     const user = useSelector((state) => state.auth.user || {});
     const isAdmin = user?.role === "admin";
 
@@ -128,6 +128,7 @@ const QueryPanel = ({ isOpen, onClose }) => {
                                         <th>Name</th>
                                         <th>WKT</th>
                                         <th>Length</th>
+                                        <th>Area</th>
                                         {isAdmin && <th>Created By</th>}
                                         {isAdmin && <th>Created At</th>}
                                         <th>Actions</th>
@@ -141,6 +142,9 @@ const QueryPanel = ({ isOpen, onClose }) => {
                                                 <td>{obj.wkt}</td>
                                                 <td>
                                                     {obj.wkt.startsWith("LINESTRING") ? getFormattedLength(obj.wkt) : "-"}
+                                                </td>
+                                                <td>
+                                                    {obj.wkt.startsWith("POLYGON") ? getFormattedArea(obj.wkt) : "-"}
                                                 </td>
                                                 {isAdmin && <td>{obj.createdByUsername || "-"}</td>}
                                                 {isAdmin && (
